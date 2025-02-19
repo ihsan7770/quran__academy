@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:quran__academy/other/Home/homephone/Home_Phone.dart';
+import 'firebase_options.dart';
+
+
+
+
+
+// Importing screens
+import 'package:quran__academy/Admin/AddEvents.dart';
+import 'package:quran__academy/Admin/admin_home_phn.dart';
 import 'package:quran__academy/other/Home/Home.dart';
 import 'package:quran__academy/other/Home/homeweb/Home_web.dart';
 import 'package:quran__academy/other/Home/homeweb/Web_Gallery.dart';
@@ -9,7 +20,12 @@ import 'package:quran__academy/other/Home/homeweb/webcharity/Web_charity.dart';
 import 'package:quran__academy/other/Home/homeweb/web_about.dart';
 import 'package:quran__academy/other/splash.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
+ 
   runApp(const MainApp());
 }
 
@@ -19,26 +35,26 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // Set the font family globally
-        fontFamily: 'Tino', // Apply Tinos font family globally
+        fontFamily: 'Tino', // Ensure the font is added in pubspec.yaml
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: 'Home', // Ensure this matches the route below
+      initialRoute: 'Home', // Ensure this matches a valid route
       routes: {
         'Splash': (context) => Splash(),
         'Home': (context) => Home(),
         'HomeWeb': (context) => HomeWeb(),
+        'Home_Phone':(context) => Home_Phone(),
         'About': (context) => About(),
         'Gallery_Web': (context) => Gallery_Web(),
-        'CharityWeb':(context) => CharityWeb(),
-        'DonationWeb':(context) => DonationWeb(),  
-        'DonationPayWeb':(context) =>DonationPayWeb() ,
-        // 'AcademicsWeb':(context) => AcademicsWeb(),
-        'FacultyWeb':(context)=> FacultyWeb(),
-       
+        'CharityWeb': (context) => CharityWeb(),
+        'DonationWeb': (context) => DonationWeb(),
+        'DonationPayWeb': (context) => DonationPayWeb(),
+        'FacultyWeb': (context) => FacultyWeb(),
+        'AdminHomePhn': (context) => AdminHomePhn(),
+        'AddEvents': (context) => AddEvents(),
       },
     );
   }

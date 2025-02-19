@@ -66,7 +66,12 @@ class _EventcondState extends State<Eventcond> {
                       "An institution dedicated to Hifz education, following the traditions of Islamic scholar training in Kerala.",
                       style: TextStyle(fontSize: 20, color: Colors.black), // Increased font size
                     ),
-                    SizedBox(height: 150),
+
+                    Text("On location",style: TextStyle(fontSize: 20, color: Colors.black)),
+
+
+
+                    SizedBox(height: 100),
                     // Date and Join Event button row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
