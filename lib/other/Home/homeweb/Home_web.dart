@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:quran__academy/other/Widget%20class/animation_up_event.dart';
-import 'package:quran__academy/other/Widget%20class/container_green.dart';
-import 'package:quran__academy/other/Widget%20class/last_condainer.dart';
-import 'package:quran__academy/other/Widget%20class/map.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/animation_up_event.dart';
+import 'package:quran__academy/Widget%20class/container_green.dart';
+import 'package:quran__academy/Widget%20class/last_condainer.dart';
+import 'package:quran__academy/Widget%20class/map.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 
 //"com.example.quran_academy"

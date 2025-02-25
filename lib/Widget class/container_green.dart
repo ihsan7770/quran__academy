@@ -4,8 +4,8 @@ import 'package:quran__academy/other/Home/homeweb/Home_web.dart';
 import 'package:quran__academy/other/Home/homeweb/Web_Gallery.dart';
 import 'package:quran__academy/other/Home/homeweb/web_about.dart';
 import 'package:quran__academy/other/Home/homeweb/webcharity/Web_charity.dart';
-import 'package:quran__academy/other/Widget%20class/DropDown.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/DropDown.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 
 class GreenCondainer extends StatefulWidget {

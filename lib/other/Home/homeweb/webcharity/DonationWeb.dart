@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:quran__academy/other/Widget%20class/container_green.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/container_green.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
+import 'package:quran__academy/other/Home/homeweb/webcharity/DonationPayWeb.dart';
 
 class DonationWeb extends StatefulWidget {
   const DonationWeb({super.key});
@@ -72,7 +73,7 @@ Column(
                                       onPressed: () {
                         Navigator.push(
                                            context,
-                                 MaterialPageRoute(builder: (context) => DonationWeb()),
+                                 MaterialPageRoute(builder: (context) => DonationPayWeb()),
                                                                      );
                                       },
                                       style: ElevatedButton.styleFrom(

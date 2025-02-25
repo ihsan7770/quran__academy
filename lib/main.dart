@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:quran__academy/Admin/Admin_View_Complaints.dart';
 import 'package:quran__academy/other/Home/homephone/Home_Phone.dart';
+import 'package:quran__academy/other/Home/homephone/Login_Phone.dart';
+import 'package:quran__academy/other/Home/homephone/Register_student_phn.dart';
+import 'package:quran__academy/other/Home/homephone/Student_profile_phn.dart';
+import 'package:quran__academy/other/Home/homeweb/webcharity/WebSponsership.dart';
+
 import 'firebase_options.dart';
 
 
@@ -48,13 +54,22 @@ class MainApp extends StatelessWidget {
         'HomeWeb': (context) => HomeWeb(),
         'Home_Phone':(context) => Home_Phone(),
         'About': (context) => About(),
-        'Gallery_Web': (context) => Gallery_Web(),
+        'Gallery_Web': (context) => Gallery_Web(),  
         'CharityWeb': (context) => CharityWeb(),
         'DonationWeb': (context) => DonationWeb(),
         'DonationPayWeb': (context) => DonationPayWeb(),
         'FacultyWeb': (context) => FacultyWeb(),
         'AdminHomePhn': (context) => AdminHomePhn(),
         'AddEvents': (context) => AddEvents(),
+        'LoginPhone':(context) =>  LoginPhone(),
+        'StudentRegistration':(context) => StudentRegistration() ,
+        'StudentProfile':(context) => StudentProfile(),
+        'AdminComplaints':(context) => AdminComplaints(),
+        'SponsershipWeb':(context) => SponsershipWeb(),
+
+
+        
+        
       },
     );
   }

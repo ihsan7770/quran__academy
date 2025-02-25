@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:quran__academy/other/Home/homeweb/webcharity/EventBookingFeild.dart';
 import 'package:quran__academy/other/Home/homeweb/webcharity/DonationWeb.dart';
-import 'package:quran__academy/other/Widget%20class/container_green.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/container_green.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
+import 'package:quran__academy/other/Home/homeweb/webcharity/ViewEventsBooked.dart';
+import 'package:quran__academy/other/Home/homeweb/webcharity/WebSponsership.dart';
 
 class CharityWeb extends StatefulWidget {
   const CharityWeb({super.key});
@@ -74,7 +77,10 @@ Scaffold(
                     padding: const EdgeInsets.only(left: 40,right: 20,bottom: 1,top: 1),
                     child: ElevatedButton(
                               onPressed: () {
-                                // Add your donate button action here
+
+                        Navigator.push(context,
+                               MaterialPageRoute(builder: (context) => ViewEventBooked()),
+                                                                   );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.greens, // Button color (change to your desired color)
@@ -251,7 +257,9 @@ Scaffold(
                     padding: const EdgeInsets.only(left: 40,right: 20,bottom: 1,top: 1),
                     child: ElevatedButton(
                               onPressed: () {
-                                // Add your donate button action here
+                                 Navigator.push(context,
+                               MaterialPageRoute(builder: (context) => SponsershipWeb()),
+                                                                   ); // Add your donate button action here
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.greens, // Button color (change to your desired color)

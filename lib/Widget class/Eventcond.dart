@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 class Eventcond extends StatefulWidget {
   const Eventcond({super.key});
@@ -53,7 +53,7 @@ class _EventcondState extends State<Eventcond> {
                   children: [
                     // Title text
                     Text(
-                      "KANNYALA SHIHAB THANGAL THAHFEELUL QURAN ACADEMY",
+                      "Admission Started",
                       style: TextStyle(
                         fontSize: 30, // Increased font size
                         fontWeight: FontWeight.bold,

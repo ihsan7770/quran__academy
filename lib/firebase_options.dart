@@ -21,7 +21,7 @@ class DefaultFirebaseOptions {
     apiKey: "AIzaSyAmK030SiFb9j3HqiXxOVlECEynIEsbLSg",  
     authDomain: "quran-academy-b27b5.firebaseapp.com",
     projectId: "quran-academy-b27b5",
-    storageBucket: "quran-academy-b27b5.appspot.com",
+    storageBucket: "quran-academy-b27b5.firebasestorage.app",
     messagingSenderId: "1041215585825",
     appId: "1:1041215585825:web:YOUR_UNIQUE_WEB_APP_ID",
   );
@@ -31,7 +31,7 @@ class DefaultFirebaseOptions {
     appId: "1:1041215585825:android:7d79ce020fecbc42f9ad60",
     messagingSenderId: "1041215585825",
     projectId: "quran-academy-b27b5",
-    storageBucket: "quran-academy-b27b5.appspot.com",
+    storageBucket: "quran-academy-b27b5.firebasestorage.app",
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -39,6 +39,6 @@ class DefaultFirebaseOptions {
     appId: "1:1041215585825:web:YOUR_UNIQUE_WINDOWS_APP_ID",
     messagingSenderId: "1041215585825",
     projectId: "quran-academy-b27b5",
-    storageBucket: "quran-academy-b27b5.appspot.com",
+    storageBucket: "quran-academy-b27b5.firebasestorage.app",
   );
 }

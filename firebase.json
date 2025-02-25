@@ -1,0 +1,28 @@
+{
+    "flutter": {
+      "platforms": {
+        "android": {
+          "default": {
+            "projectId": "quran-academy-b27b5",
+            "appId": "1:1041215585825:android:7d79ce020fecbc42f9ad60",
+            "fileOutput": "android/app/google-services.json"
+          }
+        },
+        "windows": {
+          "default": {
+            "projectId": "quran-academy-b27b5",
+            "appId": "1:1041215585825:web:YOUR_UNIQUE_WINDOWS_APP_ID",
+            "fileOutput": "windows/firebase_options.dart"
+          }
+        },
+        "web": {
+          "default": {
+            "projectId": "quran-academy-b27b5",
+            "appId": "1:1041215585825:web:YOUR_UNIQUE_WEB_APP_ID",
+            "fileOutput": "lib/firebase_options.dart"
+          }
+        }
+      }
+    }
+  }
+  

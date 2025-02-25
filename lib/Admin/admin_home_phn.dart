@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quran__academy/Admin/AddEvents.dart';
+import 'package:quran__academy/Admin/AdminSendNotification.dart';
+import 'package:quran__academy/Admin/Admin_View_Bookings.dart';
+import 'package:quran__academy/Admin/Admin_View_Complaints.dart';
+import 'package:quran__academy/Admin/Admin_View_DonatedAmount.dart';
 import 'package:quran__academy/other/Home/homephone/Login_Phone.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 class AdminHomePhn extends StatefulWidget {
   const AdminHomePhn({super.key});
@@ -61,7 +65,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
                 onTap: () {
-                  
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminComplaints()));
                 },
                 child: Container(
                    decoration: BoxDecoration(
@@ -70,7 +74,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
                   width: 150,
                   height: 150,
                  
-                  child: Center(child: Text("any thing else"),),
+                  child: Center(child: Text("View Complaints"),),
                 ),
               ),
             )
@@ -87,6 +91,9 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
                 onTap: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminViewBookings()));
+
+
                   
                 },
                 child: Container(
@@ -95,7 +102,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
                   decoration: BoxDecoration(
                   color: Colors.amber,  
                   borderRadius: BorderRadius.circular(30)),
-                  child: Center(child: Text("Add Events"),),
+                  child: Center(child: Text("View Bookings"),),
                 ),
               ),
             ),
@@ -104,6 +111,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
                 onTap: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminSendNotification()));
                   
                 },
                 child: Container(
@@ -112,7 +120,57 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
                    decoration: BoxDecoration(
                   color: Colors.amber,  
                   borderRadius: BorderRadius.circular(30)),
-                  child: Center(child: Text("any thing else"),),
+                  child: Center(child: Text("Send Notification"),),
+                ),
+              ),
+            )
+
+
+          ],
+        ),
+
+
+
+//3rd row
+
+
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDonatedAmounts ()));
+
+
+                  
+                },
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                  color: Colors.amber,  
+                  borderRadius: BorderRadius.circular(30)),
+                  child: Center(child: Text("Donated Amount"),),
+                ),
+              ),
+            ),
+
+              Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: () {
+                  //  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminSendNotification()));
+                  
+                },
+                child: Container(
+                  width: 150,
+                  height: 150,
+                   decoration: BoxDecoration(
+                  color: Colors.amber,  
+                  borderRadius: BorderRadius.circular(30)),
+                  child: Center(child: Text("Home Work "),),
                 ),
               ),
             )
@@ -120,7 +178,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
 
           ],
         )
-
+        //3rd row ends
 
       ],)
 

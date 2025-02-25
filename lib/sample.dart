@@ -1,92 +1,93 @@
-// // import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// // import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:image_picker/image_picker.dart';
 
-// class SignUpPage extends StatelessWidget {
-//   final _formKey = GlobalKey<FormState>();
-//   final TextEditingController _emailController = TextEditingController();
-//   final TextEditingController passwordController = TextEditingController();
+// class UploadImage extends StatefulWidget {
+//   const UploadImage({super.key});
 
-//   // Function to handle sign-up
-//   Future<UserCredential> createUserWithEmailAndPassword(
-//     String email,
-//     String password,
-//   ) async {
+//   @override
+//   State<UploadImage> createState() => _UploadImageState();
+// }
+
+// class _UploadImageState extends State<UploadImage> {
+//   File? _image;
+//   bool _isUploading = false;
+//   String? _uploadedImageUrl;
+
+//   // Function to pick an image from gallery
+//   Future<void> _pickImage() async {
+//     final picker = ImagePicker();
+//     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+//     if (pickedFile != null) {
+//       setState(() {
+//         _image = File(pickedFile.path);
+//       });
+//     }
+//   }
+
+//   // Function to upload image to Firebase Storage
+//   Future<void> _uploadImage() async {
+//     if (_image == null) return;
+
+//     setState(() {
+//       _isUploading = true;
+//     });
+
 //     try {
-//       // Create a new user with email and password using Firebase Auth
-//       UserCredential userCredential = await FirebaseAuth.instance
-//           .createUserWithEmailAndPassword(email: email, password: password);
-//       return userCredential;
+//       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+//       final storageRef = FirebaseStorage.instance.ref().child('uploads/$fileName');
+
+//       await storageRef.putFile(_image!);
+
+//       String downloadUrl = await storageRef.getDownloadURL();
+//       setState(() {
+//         _uploadedImageUrl = downloadUrl;
+//       });
+
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Upload Successful!')),
+//       );
 //     } catch (e) {
-//       throw Exception('Error creating user: $e');
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Upload Failed: $e')),
+//       );
+//     } finally {
+//       setState(() {
+//         _isUploading = false;
+//       });
 //     }
 //   }
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar(title: Text('Sign Up')),
+//       appBar: AppBar(title: const Text('Upload Image')),
 //       body: Padding(
 //         padding: const EdgeInsets.all(16.0),
-//         child: Form(
-//           key: _formKey,
-//           child: Column(
-//             children: [
-//               TextFormField(
-//                 controller: _emailController,
-//                 decoration: InputDecoration(labelText: 'Email'),
-//                 validator: (value) {
-//                   if (value == null || value.isEmpty) {
-//                     return 'Please enter an email';
-//                   }
-//                   return null; // Return null if input is valid
-//                 },
-//               ),
-//               TextFormField(
-//                 controller: passwordController,
-//                 decoration: InputDecoration(labelText: 'Password'),
-//                 obscureText: true,
-//                 validator: (value) {
-//                   if (value == null || value.isEmpty) {
-//                     return 'Please enter a password';
-//                   } else if (value.length < 6) {
-//                     return 'Password must be at least 6 characters';
-//                   }
-//                   return null; // Return null if input is valid
-//                 },
-//               ),
-//               SizedBox(height: 20),
-
-
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   if (_formKey.currentState!.validate()) {
-//                     // If the form is valid, proceed with user creation
-//                     try {
-//                       final email = _emailController.text;
-//                       final password = passwordController.text;
-
-//                       // Call createUserWithEmailAndPassword method
-//                       UserCredential userCredential =
-//                           await createUserWithEmailAndPassword(
-//                         email,
-//                         password,
-//                       );
-
-//                       // Show success message or navigate
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(content: Text('User created successfully!')),
-//                       );
-//                     } catch (e) {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(content: Text('Error: $e')),
-//                       );
-//                     }
-//                   }
-//                 },
-//                 child: Text('Sign Up'),
-//               ),
-//             ],
-//           ),
+//         child: Column(
+//           children: [
+//             _image != null
+//                 ? Image.file(_image!, height: 200)
+//                 : const Placeholder(fallbackHeight: 200),
+//             const SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: _pickImage,
+//               child: const Text('Select Image'),
+//             ),
+//             const SizedBox(height: 10),
+//             ElevatedButton(
+//               onPressed: _isUploading ? null : _uploadImage,
+//               child: _isUploading
+//                   ? const CircularProgressIndicator(color: Colors.white)
+//                   : const Text('Upload Image'),
+//             ),
+//             const SizedBox(height: 20),
+//             if (_uploadedImageUrl != null)
+//               Text('Image URL: $_uploadedImageUrl'),
+//           ],
 //         ),
 //       ),
 //     );

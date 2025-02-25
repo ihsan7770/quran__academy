@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quran__academy/Admin/Registration_Phn.dart';
-import 'package:quran__academy/Admin/admin_home_phn.dart';
-import 'package:quran__academy/other/Home/homephone/Models/auth_service.dart';
-import 'package:quran__academy/other/Home/homephone/Models/user_models.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/other/Home/homephone/Registration_Phn.dart';
+
+import 'package:quran__academy/Models/auth_service.dart';
+import 'package:quran__academy/Models/user_models.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 class LoginPhone extends StatefulWidget {
   const LoginPhone({super.key});
@@ -26,23 +26,33 @@ class _LoginPhoneState extends State<LoginPhone> {
 
     //login function ends
   
-  void _login()async{
-  try{
-    _usersModel=UsersModel(
+  void _login() async {
+  try {
+    _usersModel = UsersModel(
       Email: _emailController.text,
       Password: _passwordController.text,
-      );
-    
-    final data = await _authentication.loginUser(_usersModel);
-     if(data!=null){
-      Navigator.pushNamedAndRemoveUntil(context, 'Home_Phone', (route) => false);
-     }
+    );
 
-  }on FirebaseAuthException catch (e){
-  List err=e.toString().split("]");
-  ScaffoldMessenger.of(context)
-  .showSnackBar(SnackBar(content: Text(err[1])));
-}  }
+    final data = await _authentication.loginUser(_usersModel);
+    
+    if (data != null) {
+      Navigator.pushNamedAndRemoveUntil(context, 'StudentProfile', (route) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid login credentials"))
+      );
+    }
+  } on FirebaseAuthException catch (e) {
+    List err = e.toString().split("]");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(err.length > 1 ? err[1] : "Authentication failed"))
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("An error occurred: $e"))
+    );
+  }
+}
 
 //login function ends
 

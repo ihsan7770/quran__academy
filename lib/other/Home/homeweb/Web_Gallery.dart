@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:quran__academy/other/Widget%20class/container_green.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/container_green.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 
 class Gallery_Web extends StatefulWidget {

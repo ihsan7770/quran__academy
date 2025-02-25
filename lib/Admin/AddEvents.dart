@@ -1,9 +1,11 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:quran__academy/Admin/admin_home_phn.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 class AddEvents extends StatefulWidget {
   const AddEvents({super.key});
@@ -19,7 +21,6 @@ class _AddEventsState extends State<AddEvents> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-  
   File? _selectedImage;
 
   // Function to pick an image
@@ -32,16 +33,79 @@ class _AddEventsState extends State<AddEvents> {
     }
   }
 
+  //image upload
+
+Future<String?> _uploadImage(File imageFile) async {
+  try {
+    String fileName = 'events/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    Reference ref = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = ref.putFile(imageFile);
+
+    // Monitor the upload progress
+    uploadTask.snapshotEvents.listen((event) {
+      print("Upload Progress: ${(event.bytesTransferred / event.totalBytes) * 100}%");
+    });
+
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+
+    print("Image uploaded successfully: $downloadUrl");
+    return downloadUrl;
+  } catch (e) {
+    print("Image upload failed: $e");
+    return null;
+  }
+}
+
+
+  // Function to save event data to Firestore
+ Future<void> _saveEvent() async {
+  if (_formKey.currentState!.validate()) {
+    String? imageUrl;
+
+    if (_selectedImage != null) {
+      imageUrl = await _uploadImage(_selectedImage!);
+      if (imageUrl == null || imageUrl.isEmpty) {
+        print("Image upload failed. Not saving to Firestore.");
+        return;
+      }
+    }
+
+    await FirebaseFirestore.instance.collection('events').add({
+      'title': _titleController.text,
+      'description': _descriptionController.text,
+      'location': _locationController.text,
+      'date': _dateController.text,
+      'time': _timeController.text,
+      'imageUrl': imageUrl ?? '',  // Ensure empty string only if upload fails
+      'createdAt': Timestamp.now(),
+    });
+
+    print("Event saved successfully with image: $imageUrl");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Event Created Successfully!')),
+    );
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AdminHomePhn()),
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: AppColors.lightGreen,
+      backgroundColor: AppColors.lightGreen,
       appBar: AppBar(
-        backgroundColor:AppColors.lightGreen,
+        backgroundColor: AppColors.lightGreen,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 30),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminHomePhn()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminHomePhn()),
+            );
           },
         ),
         title: Text("Add Event"),
@@ -59,12 +123,8 @@ class _AddEventsState extends State<AddEvents> {
                 child: TextFormField(
                   controller: _titleController,
                   decoration: _inputDecoration("Title"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Title cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Title cannot be empty' : null,
                 ),
               ),
 
@@ -75,12 +135,8 @@ class _AddEventsState extends State<AddEvents> {
                   controller: _descriptionController,
                   decoration: _inputDecoration("Description"),
                   maxLines: 4,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Description cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Description cannot be empty' : null,
                 ),
               ),
 
@@ -104,12 +160,8 @@ class _AddEventsState extends State<AddEvents> {
                       });
                     }
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Date cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Date cannot be empty' : null,
                 ),
               ),
 
@@ -131,12 +183,8 @@ class _AddEventsState extends State<AddEvents> {
                       });
                     }
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Time cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Time cannot be empty' : null,
                 ),
               ),
 
@@ -146,16 +194,12 @@ class _AddEventsState extends State<AddEvents> {
                 child: TextFormField(
                   controller: _locationController,
                   decoration: _inputDecoration("Location"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Location cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Location cannot be empty' : null,
                 ),
               ),
 
-              // Image Picker Button
+              // Image Picker
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Column(
@@ -188,13 +232,7 @@ class _AddEventsState extends State<AddEvents> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Event Created!')),
-                      );
-                    }
-                  },
+                  onPressed: _saveEvent,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
@@ -219,19 +257,9 @@ class _AddEventsState extends State<AddEvents> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.black54),
-      floatingLabelStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
       filled: true,
       fillColor: Colors.grey[300],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide.none,
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
     );
   }
 }

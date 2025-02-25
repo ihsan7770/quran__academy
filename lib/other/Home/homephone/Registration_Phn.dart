@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:quran__academy/other/Home/homephone/Models/auth_service.dart';
-import 'package:quran__academy/other/Home/homephone/Models/user_models.dart';
-import 'package:quran__academy/other/Widget%20class/theme.dart';
+import 'package:quran__academy/Models/auth_service.dart';
+import 'package:quran__academy/Models/user_models.dart';
+import 'package:quran__academy/Widget%20class/theme.dart';
 
 class RegistrationPhone extends StatefulWidget {
   const RegistrationPhone({super.key});
@@ -29,7 +29,7 @@ class _RegistrationPhoneState extends State<RegistrationPhone> {
 
     final userdata = await _authentication.registerUser(_usersModel);
     if (userdata != null) {
-      Navigator.pushNamedAndRemoveUntil(context, 'Home_Phone', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, 'StudentRegistration', (route) => false);
     }
   } on FirebaseAuthException catch (e) {
     List err = e.toString().split("]");

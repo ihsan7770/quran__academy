@@ -15,6 +15,11 @@ dependencies:
   firebase_auth: ^5.2.0
   cloud_firestore: ^5.4.0
   shared_preferences: ^2.2.3
+  firebase_storage: ^12.2.0
+  path_provider: ^2.1.4
+  image: ^4.5.2
+  flutter_credit_card: ^4.0.1
+  fluttertoast: ^8.2.8
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +35,9 @@ flutter:
     - assets/qa.png
     - assets/head.png
     - assets/buld.jpg
-    - assets/map.png  
+    - assets/map.png
+    - assets/nasru.png
+      
   
   fonts:
     - family: Tino  # Specify Tinos font family here
