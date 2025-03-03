@@ -17,7 +17,14 @@ class _EventBookingFieldState extends State<EventBookingField> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _eventTypeController = TextEditingController(); // Added Event Type
+
+  // Dropdown event types
+  String? _selectedEventType;
+  final List<String> _eventTypes = [
+    "Marriage",
+    "House Warming",
+    "Iftar Meet"
+  ];
 
   /// Function to select date
   Future<void> _selectDate() async {
@@ -70,7 +77,7 @@ class _EventBookingFieldState extends State<EventBookingField> {
         false;
   }
 
-  /// Function to save event booking details to Firestore
+  /// Function to save event booking details to Firestore and pop out
   Future<void> _bookEvent() async {
     if (_formKey.currentState!.validate()) {
       bool confirmBooking = await _showConfirmationDialog();
@@ -80,24 +87,32 @@ class _EventBookingFieldState extends State<EventBookingField> {
         await FirebaseFirestore.instance.collection('event_bookings').add({
           'name': _nameController.text.trim(),
           'phone': _phoneController.text.trim(),
-          'event_type': _eventTypeController.text.trim(), // Added Event Type
+          'event_type': _selectedEventType, // Use selected event type
           'date': _dateController.text.trim(),
           'time': _timeController.text.trim(),
           'location': _locationController.text.trim(),
           'timestamp': FieldValue.serverTimestamp(),
         });
 
+        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Event Booked Successfully')),
         );
 
+        // Delay pop-out slightly to let the user see the message
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context);
+        });
+
         // Clear fields after booking
         _nameController.clear();
         _phoneController.clear();
-        _eventTypeController.clear();
         _dateController.clear();
         _timeController.clear();
         _locationController.clear();
+        setState(() {
+          _selectedEventType = null; // Reset dropdown selection
+        });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
@@ -150,6 +165,40 @@ class _EventBookingFieldState extends State<EventBookingField> {
     );
   }
 
+  /// Dropdown field for selecting event type
+  Widget _buildDropdownField() {
+    return Container(
+      width: 500,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: DropdownButtonFormField<String>(
+        value: _selectedEventType,
+        items: _eventTypes.map((type) {
+          return DropdownMenuItem<String>(
+            value: type,
+            child: Text(type),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedEventType = value;
+          });
+        },
+        validator: (value) => value == null ? "Please select an event type" : null,
+        decoration: InputDecoration(
+          labelText: "Event Type",
+          filled: true,
+          fillColor: Colors.grey[300],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,9 +218,7 @@ class _EventBookingFieldState extends State<EventBookingField> {
                       controller: _phoneController,
                       label: "Phone Number",
                       isNumber: true),
-                  _buildTextField(
-                      controller: _eventTypeController,
-                      label: "Event Type"), // Added Event Type
+                  _buildDropdownField(), // Dropdown for Event Type
                   _buildTextField(
                       controller: _dateController, label: "Date", isDate: true),
                   _buildTextField(

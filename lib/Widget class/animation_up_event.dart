@@ -33,7 +33,9 @@ class _AnimatedEventListState extends State<AnimatedEventList> with SingleTicker
       curve: Curves.linear, // Linear scrolling
     ))
       ..addListener(() {
-        _scrollController.jumpTo(_animation.value); // Move the scroll position
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_animation.value); // Move the scroll position
+        }
       });
 
     // Start auto-scroll animation
@@ -46,6 +48,14 @@ class _AnimatedEventListState extends State<AnimatedEventList> with SingleTicker
       _controller.reset();
       _startAutoScroll(); // Repeat the scroll once finished
     });
+  }
+
+  void _pauseScroll() {
+    _controller.stop(); // Pause scrolling
+  }
+
+  void _resumeScroll() {
+    _controller.forward(); // Resume scrolling
   }
 
   @override
@@ -61,7 +71,7 @@ class _AnimatedEventListState extends State<AnimatedEventList> with SingleTicker
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            color: AppColors.lightGreen,
+          color: AppColors.lightGreen,
           width: 1400,
           height: 400,
           child: ClipRect(
@@ -69,7 +79,11 @@ class _AnimatedEventListState extends State<AnimatedEventList> with SingleTicker
               controller: _scrollController,
               physics: NeverScrollableScrollPhysics(), // Prevent manual scrolling
               itemBuilder: (context, index) {
-                return Eventcond(); // Repeating container
+                return GestureDetector(
+                  onTapDown: (_) => _pauseScroll(), // Pause on touch
+                  onTapUp: (_) => _resumeScroll(), // Resume on release
+                  child: Eventcond(),
+                );
               },
             ),
           ),

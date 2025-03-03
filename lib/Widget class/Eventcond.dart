@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
 
@@ -9,114 +10,123 @@ class Eventcond extends StatefulWidget {
 }
 
 class _EventcondState extends State<Eventcond> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: 1500, // Updated width
-        height: 400, // Updated height
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15), // Rounded corners for a cleaner look
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1), // Light shadow color
-              spreadRadius: 2, // Controls how far the shadow extends
-              blurRadius: 10, // Controls the blur of the shadow
-              offset: Offset(0, 5), // Controls the shadow's position (vertical offset)
-            ),
-          ], // Shadow effect for a lifted appearance
-        ),
-        child: Row(
-          children: [
-            // Image section
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15),
-                bottomLeft: Radius.circular(15),
-              ), // Rounded corners for image
-              child: Image.asset(
-                "assets/buld.jpg", // Replace with your actual image path
-                width: 600, // Adjusted width to fit larger container
-                height: 400, // Ensures the image covers the entire height
-                fit: BoxFit.cover, // Ensure the image scales correctly
-              ),
-            ),
-            // Content section
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('events').orderBy('createdAt', descending: true).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator()); // Show loading indicator
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text("No Events Available", style: TextStyle(fontSize: 18, color: Colors.black)));
+        }
+
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            var eventData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                height: 400,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Row(
                   children: [
-                    // Title text
-                    Text(
-                      "Admission Started",
-                      style: TextStyle(
-                        fontSize: 30, // Increased font size
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    // Image section
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    // Description text
-                    Text(
-                      "An institution dedicated to Hifz education, following the traditions of Islamic scholar training in Kerala.",
-                      style: TextStyle(fontSize: 20, color: Colors.black), // Increased font size
-                    ),
-
-                    Text("On location",style: TextStyle(fontSize: 20, color: Colors.black)),
-
-
-
-                    SizedBox(height: 100),
-                    // Date and Join Event button row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Date and time
-                        Text(
-                          "31 Jan 2025 | 10:30 AM",
-                          style: TextStyle(fontSize: 16, color: Colors.black), // Increased font size
-                        ),
-                        // Join event button
-                        ElevatedButton(
-                          onPressed: () {
-
-                             Navigator.pushNamed(context, 'About');
-                            // Your action here
-                          },
-                          style: ElevatedButton.styleFrom(
-                            
-                            backgroundColor: AppColors.greens, // Green background
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5), // Rounded button edges
+                      child: eventData['imageUrl'] != null && eventData['imageUrl'] != ''
+                          ? Image.network(
+                              eventData['imageUrl'],
+                              width: 400,
+                              height: 400,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              "assets/buld.jpg", // Fallback image
+                              width: 400,
+                              height: 400,
+                              fit: BoxFit.cover,
                             ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 30), // Adjust padding
-                          ),
-                          child: Text(
-                            "Join Event",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18, // Increased font size
-                              fontWeight: FontWeight.w400,
-                            ), // White text for contrast
-                          ),
+                    ),
+                    // Content section
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Event Title
+                            Text(
+                              eventData['title'] ?? "Event Title",
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: 10),
 
-                          
+                            // Event Description
+                            Text(
+                              eventData['description'] ?? "No description available",
+                              style: TextStyle(fontSize: 18, color: Colors.black),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            SizedBox(height: 10),
+                            Text(
+                              "Location: ${eventData['location'] ?? 'Not specified'}",
+                              style: TextStyle(fontSize: 18, color: Colors.black),
+                            ),
+
+                            Spacer(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Date and Time
+                                Text(
+                                  "${eventData['date'] ?? 'Unknown'} | ${eventData['time'] ?? 'N/A'}",
+                                  style: TextStyle(fontSize: 16, color: Colors.black),
+                                ),
+                                // Join Event Button
+                               
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }

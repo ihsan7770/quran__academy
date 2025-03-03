@@ -111,7 +111,7 @@ class _SponsershipWebState extends State<SponsershipWeb> {
                       child: ElevatedButton(
                         onPressed: () {
                                Navigator.push(context,
-                               MaterialPageRoute(builder: (context) => SponserPayWeb()),
+                               MaterialPageRoute(builder: (context) => SponserPayWeb(studentData: studentData)),
                                                                    );
                         },
                         child: const Text('Sponsor'),
@@ -136,3 +136,4 @@ class _SponsershipWebState extends State<SponsershipWeb> {
     );
   }
 }
+  

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:quran__academy/Admin/AdminAllEvents.dart';
 import 'package:quran__academy/Admin/admin_home_phn.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
 
@@ -99,6 +100,18 @@ Future<String?> _uploadImage(File imageFile) async {
       backgroundColor: AppColors.lightGreen,
       appBar: AppBar(
         backgroundColor: AppColors.lightGreen,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(onPressed: () {
+
+
+               Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => EventMangement()));
+              
+            
+                    }, child: Text("All Events")),
+          )],
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 30),
           onPressed: () {

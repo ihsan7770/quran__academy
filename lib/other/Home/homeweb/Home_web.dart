@@ -141,12 +141,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 40),
 
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, 'About');
-                    },
-                    child:  AnimatedEventList(),//Event animation
-                  ),
+                  AnimatedEventList(),
                   const SizedBox(height: 200),
 
                   // Horizontal Scrolling Section

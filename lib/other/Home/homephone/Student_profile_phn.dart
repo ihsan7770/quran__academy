@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quran__academy/Widget%20class/DrowerStudent.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
+import 'package:quran__academy/other/Home/homephone/StudentNotification.dart';
 
 class StudentProfile extends StatefulWidget {
   const StudentProfile({super.key});
@@ -33,11 +34,23 @@ class _StudentProfileState extends State<StudentProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightGreen,
-      appBar: AppBar(
-         backgroundColor: AppColors.lightGreen,
-        title: const Text("Student Profile"),
-        
-      ),
+     appBar: AppBar(
+  backgroundColor: AppColors.lightGreen,
+  title: const Text("Student Profile"),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.notifications, size: 30), // Notification icon
+      onPressed: () {
+        // Add your notification screen navigation here
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StudentNotification()), // Replace with your notification screen
+        );
+      },
+    ),
+  ],
+),
+
       drawer: StudentDrower(),
 
       

@@ -3,6 +3,9 @@ import 'package:quran__academy/other/Home/homeweb/AdmissionWeb/AdmissionWeb.dart
 import 'package:quran__academy/other/Home/homeweb/Home_web.dart';
 import 'package:quran__academy/other/Home/homeweb/Web_Gallery.dart';
 import 'package:quran__academy/other/Home/homeweb/web_about.dart';
+import 'package:quran__academy/other/Home/homeweb/webacademics/CourseWeb.dart';
+import 'package:quran__academy/other/Home/homeweb/webacademics/FacilityWeb.dart';
+import 'package:quran__academy/other/Home/homeweb/webacademics/web_faculty.dart';
 import 'package:quran__academy/other/Home/homeweb/webcharity/Web_charity.dart';
 import 'package:quran__academy/Widget%20class/DropDown.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
@@ -91,7 +94,41 @@ class _GreenCondainerState extends State<GreenCondainer> {
                     
                                    SizedBox(width: size,),
 
-                                   AcademicDropdownMenu(),
+                                      InkWell(
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) =>CourseWeb ()),
+                          );
+                        },
+                        child: Text(
+                        "Courses",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                                            ),
+                      ),
+                       SizedBox(width: size,),
+                                     InkWell(
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) =>FacultyWeb()),
+                          );
+                        },
+                        child: Text(
+                        "Faculty",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                                            ),
+                      ),
+                          SizedBox(width: size,),
+                                     InkWell(
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => FacilityWeb()),
+                          );
+                        },
+                        child: Text(
+                        "Facility",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                                            ),
+                      ),
+
+
+                                  
 
                         
                               
