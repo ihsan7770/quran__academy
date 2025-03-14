@@ -101,7 +101,7 @@ class _ViewEventBookedState extends State<ViewEventBooked> {
                                MaterialPageRoute(builder: (context) => EventBookingField()),
                                                                    );
   },
-  label: const Text('Book Event',style: TextStyle( color: Colors.white),),
+  label: const Text('Invite for Event',style: TextStyle( color: Colors.white),),
   icon: const Icon(Icons.event,color: Colors.white,),
   backgroundColor: AppColors.greens
 ),

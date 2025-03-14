@@ -67,15 +67,19 @@ class _AboutState extends State<About> {
 
                 SizedBox(width:   100,),
 
-                 Container(
-                    height:390,
-                    width: 350,
-                    
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(30)),
-                  
+         Container(
+               height: 390,
+               width: 350,
+               decoration: BoxDecoration(
+              //  color: Colors.amber,
+               borderRadius: BorderRadius.circular(30),
+               image: DecorationImage(
+               image: AssetImage('assets/gpphoto.jpg'), // Replace with your image path
+               fit: BoxFit.cover, // Adjust the fit as needed
+                       ),
                   ),
+            )
+ 
 
                
                    

@@ -47,16 +47,18 @@ class _CourseWebState extends State<CourseWeb> {
                   width: 700,
                   height: 400,
                   child: Text(
-                            "Kannyala Shihab Thangal Thahfeelul Quran Academy is a Hifz college or an educational "
-                            "institution of higher religious learning, equivalent to a North Indian madrasa, located at "
-                            "Kannyala Pattikkad, near Perinthalmanna in the Malappuram district of Kerala. "
-                            "Established in 2017 by the Shihab Thangal Charitable Trust, the academy was affiliated with "
-                            "Jamia Nooriya Arabiyya in 2022. It became the fifth affiliated Hifz college under Jamia Nooriya Arabiyya. "
-                            "The academy is a premier orthodox Sunni-Shafi'i institution for the training of Islamic scholars in Kerala. "
-                            "It upholds the old Ponnani tradition of scholar training. The Nizami curriculum employed at Jamia Nooriya "
-                            "is a modified version of the syllabus used at the al-Baqiyyat-us-Salihat College in Vellore, with Shafi'i Law replacing Hanafi Law."
-                             "The academy is a premier orthodox Sunni-Shafi'i institution for the training of Islamic scholars in Kerala. "
-                            "It upholds the old Ponnani tradition of scholar training. The Nizami curriculum employed at Jamia Nooriya "
+                            "Kannyala Shihab Thangal Thahfeelul Quran Academy is a dedicated Hifz college offering a"
+                            "comprehensive four-year course for students aspiring to become Hafiz. The structured curriculum "
+                            "ensures that students complete the memorization of the Quran progressively, with 8 Juz’ in the first"
+                            "year, 10 Juz’ in the second year, and 12 Juz’ in the third year. The fourth year is dedicated to revision and "
+                            "reinforcement of memorization. Alongside Quranic studies, the academy also provides formal school "
+                            "education, ensuring academic growth. Students are encouraged to participate in arts and sports,"
+                            "fostering a well-rounded personality. The academy also emphasizes leadership and communication"
+                            "skills, training students to become Imams for Jumu’ah and Taraweeh prayers. Personality development is"
+                            "a key focus, helping students gain confidence and discipline. The institution nurtures moral values, "
+                            "etiquette, and social responsibility. Highly experienced teachers provide guidance, ensuring quality"
+                            "education. The serene and disciplined learning environment enhances concentration and commitment."
+                            "Graduates emerge as confident individuals, well-versed in both religious and academic knowledge."
                             ,
                             textAlign: TextAlign.justify,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
@@ -64,16 +66,18 @@ class _CourseWebState extends State<CourseWeb> {
                 ),
 
                 SizedBox(width:   100,),
-
-                 Container(
-                    height:390,
-                    width: 350,
-                    
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(30)),
-                  
+   Container(
+               height: 390,
+               width: 350,
+               decoration: BoxDecoration(
+              //  color: Colors.amber,
+               borderRadius: BorderRadius.circular(30),
+               image: DecorationImage(
+               image: AssetImage('assets/oth.jpg'), // Replace with your image path
+               fit: BoxFit.cover, // Adjust the fit as needed
+                       ),
                   ),
+            )
 
                
                    

@@ -106,7 +106,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
                     decoration: BoxDecoration(
                     color: Colors.amber,  
                     borderRadius: BorderRadius.circular(30)),
-                    child: Center(child: Text("View Bookings"),),
+                    child: Center(child: Text("View Invitations"),),
                   ),
                 ),
               ),
@@ -124,7 +124,7 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
                      decoration: BoxDecoration(
                     color: Colors.amber,  
                     borderRadius: BorderRadius.circular(30)),
-                    child: Center(child: Text("Send Notification"),),
+                    child: Center(child: Text("Send Announcements"),),
                   ),
                 ),
               )

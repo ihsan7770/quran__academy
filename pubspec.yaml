@@ -37,6 +37,15 @@ flutter:
     - assets/buld.jpg
     - assets/map.png
     - assets/nasru.png
+    - assets/About.jpg
+    - assets/oth.jpg
+    - assets/palli.jpg
+    - assets/class.jpg
+    - assets/gpphoto.jpg
+    - assets/money.jpg
+    - assets/spon.jpg
+    - assets/prayer.jpg
+    - assets/ann.jpg
       
   
   fonts:

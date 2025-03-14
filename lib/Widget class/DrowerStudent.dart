@@ -5,6 +5,7 @@ import 'package:quran__academy/Widget%20class/theme.dart';
 import 'package:quran__academy/other/Home/homephone/Homework.dart';
 import 'package:quran__academy/other/Home/homephone/Login_Phone.dart';
 import 'package:quran__academy/other/Home/homephone/StudentComplaints_phn.dart';
+import 'package:quran__academy/other/Home/homephone/StudentInvitations.dart';
 
 class StudentDrower extends StatefulWidget {
   const StudentDrower({super.key});
@@ -87,7 +88,7 @@ class _StudentDrowerState extends State<StudentDrower> {
                 style: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               accountEmail: Text(
@@ -95,7 +96,7 @@ class _StudentDrowerState extends State<StudentDrower> {
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -120,6 +121,20 @@ class _StudentDrowerState extends State<StudentDrower> {
                 );
               },
             ),
+                 ListTile(
+              leading: const Icon(Icons.diversity_1),
+              title: const Text("Invitations"),
+              onTap: () {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StudentInvitations()),
+                );
+              
+              },
+            ),
+
+
             ListTile(
               leading: const Icon(Icons.exit_to_app),
               title: const Text("Logout"),

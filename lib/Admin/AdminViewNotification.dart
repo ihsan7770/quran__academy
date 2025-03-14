@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:quran__academy/Admin/admin_home_phn.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
 import 'package:quran__academy/other/Home/homephone/Student_profile_phn.dart';
 
@@ -22,11 +23,11 @@ class _StudentNotificationState extends State<StudentNotification> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const StudentProfile()),
+              MaterialPageRoute(builder: (context) => const AdminHomePhn()),
             );
           },
         ),
-        title: const Text("Notifications"),
+        title: const Text(" Announcements "),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

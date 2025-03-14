@@ -54,7 +54,6 @@ class MainApp extends StatelessWidget {
         'Home': (context) => Home(),
         'HomeWeb': (context) => HomeWeb(),
         'Home_Phone':(context) => Home_Phone(),
-        'About': (context) => About(),
         'Gallery_Web': (context) => Gallery_Web(),  
         'CharityWeb': (context) => CharityWeb(),
         'DonationWeb': (context) => DonationWeb(),

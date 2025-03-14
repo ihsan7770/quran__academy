@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,12 +21,15 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   final TextEditingController _juzzController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
   String? _userName;
   String? _userPhone;
   String? _userUID;
+
+  bool _isLoading = false; // Loading state
 
   @override
   void initState() {
@@ -72,8 +74,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
           FirebaseStorage.instance.ref().child('student_images/$fileName');
       UploadTask uploadTask = ref.putFile(image);
       TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
+      return await snapshot.ref.getDownloadURL();
     } catch (e) {
       print("Image upload error: $e");
       return null;
@@ -83,6 +84,10 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   /// Save student data to Firestore
   Future<void> _saveToFirestore() async {
     if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
 
     String? imageUrl;
     if (_image != null) {
@@ -109,8 +114,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
       );
       _clearForm();
 
-      // Navigate to the StudentProfile Page
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => StudentProfile(),
@@ -121,6 +125,10 @@ class _StudentRegistrationState extends State<StudentRegistration> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error registering student')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
     }
   }
 
@@ -189,23 +197,21 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightGreen,
-      appBar: AppBar(title: const Text("Register Student")),
+      appBar: AppBar(
+        backgroundColor: AppColors.lightGreen,
+        title: const Text("Register Student"),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              _buildTextField(_studentNameController, "Student Name"),
-              _buildTextField(_standardController, "Standard"),
-              _buildTextField(_juzzController, "Current Juzz", isNumber: true),
-              _buildTextField(_dateController, "Date of Birth", isDate: true),
-              _buildTextField(_addressController, "Address", maxLines: 4),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: _pickImage,
                 child: CircleAvatar(
-                  radius: 50,
+                  radius: 70,
                   backgroundColor: Colors.grey[300],
                   backgroundImage: _image != null ? FileImage(_image!) : null,
                   child: _image == null
@@ -213,11 +219,24 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                       : null,
                 ),
               ),
+
+              const SizedBox(height: 10),
+
+              _buildTextField(_studentNameController, "Student Name"),
+              _buildTextField(_standardController, "Standard"),
+              _buildTextField(_juzzController, "Current Juzz", isNumber: true),
+              _buildTextField(_dateController, "Date of Birth", isDate: true),
+              _buildTextField(_addressController, "Address", maxLines: 4),
+
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveToFirestore,
-                child: const Text("Submit"),
-              ),
+
+              // Show Circular Progress Indicator when loading
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _saveToFirestore,
+                      child: const Text("Submit"),
+                    ),
             ],
           ),
         ),

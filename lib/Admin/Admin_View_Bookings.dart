@@ -16,7 +16,7 @@ class _AdminViewBookingsState extends State<AdminViewBookings> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Confirm Deletion"),
-        content: const Text("Are you sure you want to delete this booking?"),
+        content: const Text("Are you sure you want to delete this Invitation?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -48,7 +48,7 @@ class _AdminViewBookingsState extends State<AdminViewBookings> {
                 context, MaterialPageRoute(builder: (context) => AdminHomePhn()));
           },
         ),
-        title: const Text("Event Bookings"),
+        title: const Text("Invitations"),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('event_bookings').snapshots(),

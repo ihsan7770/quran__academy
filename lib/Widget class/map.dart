@@ -20,30 +20,32 @@ class MapImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Heading
-        // const Padding(
-        //   padding: EdgeInsets.all(10.0),
-        //   child: Text(
-        //     "Location",
-        //     style: TextStyle(
-        //       fontSize: 24,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        // ),
-
-        // Image and overlay text inside a Stack
+        // Image with curved decoration inside a Stack
         Stack(
           alignment: Alignment.bottomRight, // Position overlay at bottom-right
           children: [
             InkWell(
               onTap: _launchMaps,
-              child: SizedBox(
+              child: Container(
                 width: 1400, // Adjust width as needed
                 height: 500,
-                child: Image.asset(
-                  "assets/map.png", 
-                  fit: BoxFit.cover,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30), // Curved edges
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30), // Clip image to curved shape
+                  child: Image.asset(
+                    "assets/map.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -53,9 +55,11 @@ class MapImage extends StatelessWidget {
               bottom: 10,
               right: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 5),
-                color: Colors.black54,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(10), // Curved overlay
+                ),
                 child: const Text(
                   "Tap to Open Map",
                   style: TextStyle(
@@ -69,8 +73,6 @@ class MapImage extends StatelessWidget {
         ),
 
         const SizedBox(height: 10), // Space between image and button
-
-      
       ],
     );
   }

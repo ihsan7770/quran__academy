@@ -61,7 +61,7 @@ class _EventBookingFieldState extends State<EventBookingField> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text("Confirm Booking"),
-            content: const Text("Are you sure you want to book this event?"),
+            content: const Text("Are you sure you want to invite for event?"),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -96,7 +96,7 @@ class _EventBookingFieldState extends State<EventBookingField> {
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Event Booked Successfully')),
+          const SnackBar(content: Text('Invitation Send Successfully')),
         );
 
         // Delay pop-out slightly to let the user see the message
@@ -237,7 +237,7 @@ class _EventBookingFieldState extends State<EventBookingField> {
                       ),
                     ),
                     child: const Text(
-                      "Book Event",
+                      "Invite",
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),

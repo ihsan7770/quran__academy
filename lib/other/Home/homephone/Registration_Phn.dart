@@ -12,48 +12,17 @@ class RegistrationPhone extends StatefulWidget {
 }
 
 class _RegistrationPhoneState extends State<RegistrationPhone> {
-
-//registration function
-  void _register() async {
-  _usersModel = UsersModel(
-    Email: _emailController.text,
-    Password: _passwordController.text,
-    Name: _nameController.text,
-    Phone: _phoneController.text, // Include the phone number
-    Status: 1,
-    CreatedAt: DateTime.now(),
-  );
-
-  try {
-    await Future.delayed(Duration(seconds: 1));
-
-    final userdata = await _authentication.registerUser(_usersModel);
-    if (userdata != null) {
-      Navigator.pushNamedAndRemoveUntil(context, 'StudentRegistration', (route) => false);
-    }
-  } on FirebaseAuthException catch (e) {
-    List err = e.toString().split("]");
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(err[1])));
-  }
-}
-
-//end
-
-
-
-
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  
   bool _obscurePassword = true;
+  bool _isLoading = false; // Loading state
 
-
- UsersModel _usersModel=UsersModel();
- Authentication _authentication =Authentication();
+  UsersModel _usersModel = UsersModel();
+  Authentication _authentication = Authentication();
 
   @override
   void dispose() {
@@ -64,7 +33,44 @@ class _RegistrationPhoneState extends State<RegistrationPhone> {
     super.dispose();
   }
 
+  // Registration function with loading indicator
+  void _register() async {
+    if (!_formKey.currentState!.validate()) return;
 
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
+    _usersModel = UsersModel(
+      Email: _emailController.text,
+      Password: _passwordController.text,
+      Name: _nameController.text,
+      Phone: _phoneController.text,
+      Status: 1,
+      CreatedAt: DateTime.now(),
+    );
+
+    try {
+      final userdata = await _authentication.registerUser(_usersModel);
+      if (userdata != null) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, 'StudentRegistration', (route) => false);
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "Registration failed. Please try again.";
+
+      if (e.code == "email-already-in-use") {
+        errorMessage = "This email is already registered. Please log in.";
+      }
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(errorMessage)));
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +78,8 @@ class _RegistrationPhoneState extends State<RegistrationPhone> {
       backgroundColor: AppColors.lightGreen,
       appBar: AppBar(
         backgroundColor: AppColors.lightGreen,
-        title: Text("Register")),
+        title: Text("Register"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -80,154 +87,84 @@ class _RegistrationPhoneState extends State<RegistrationPhone> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _nameController,
-                   decoration: InputDecoration(
-                        labelText: 'Name',
-                        labelStyle: TextStyle(color: Colors.black54),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      ),
-                    validator: (value) =>
-                        value!.isEmpty ? "Please enter your name" : null,
-                  ),
-                ),
-            
-            
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.black54),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) => value!.isEmpty || !value.contains('@')
-                        ? "Enter a valid email"
-                        : null,
-                  ),
-                ),
-            
-            
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _passwordController,
-                   decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.black54),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  
-                        
-                  suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                  
-                  
-                  
-                      ),
-                    obscureText: _obscurePassword,
-                    validator: (value) => value!.length < 8
-                        ? "Password must be at least 8 characters"
-                        : null,
-                  ),
-                ),
-            
-            
-            
-            
-            
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _phoneController,
-                   decoration: InputDecoration(
-                        labelText: 'Phone Number',
-                        labelStyle: TextStyle(color: Colors.black54),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      ),
-                    keyboardType: TextInputType.phone,
-                    validator: (value) => value!.length != 10
-                        ? "Enter a valid 10-digit phone number"
-                        : null,
-                  ),
-                ),
-            
-            
+                _buildTextField(_nameController, "Name", TextInputType.text, (value) {
+                  return value!.isEmpty ? "Please enter your name" : null;
+                }),
+                _buildTextField(_emailController, "Email", TextInputType.emailAddress, (value) {
+                  return value!.isEmpty || !value.contains('@') ? "Enter a valid email" : null;
+                }),
+                _buildPasswordField(),
+                _buildTextField(_phoneController, "Phone Number", TextInputType.phone, (value) {
+                  return value!.length != 10 ? "Enter a valid 10-digit phone number" : null;
+                }),
+
                 SizedBox(height: 20),
-                ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // If the form is valid, proceed with user creation
-                  _register();
 
-
-                  }
-                },
-                child: Text('Sign Up'),
-              ),
+                // Show Circular Progress Indicator when loading
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _register,
+                        child: Text('Sign Up'),
+                      ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Common function for text fields
+  Widget _buildTextField(TextEditingController controller, String label, TextInputType type, String? Function(String?) validator) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: type,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: Colors.grey[300],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+        validator: validator,
+      ),
+    );
+  }
+
+  // Password field with toggle visibility
+  Widget _buildPasswordField() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          labelText: 'Password',
+          filled: true,
+          fillColor: Colors.grey[300],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          suffixIcon: IconButton(
+            icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _obscurePassword = !_obscurePassword;
+              });
+            },
+          ),
+        ),
+        obscureText: _obscurePassword,
+        validator: (value) {
+          return value!.length < 8 ? "Password must be at least 8 characters" : null;
+        },
       ),
     );
   }

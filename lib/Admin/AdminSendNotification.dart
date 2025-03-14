@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quran__academy/Admin/admin_home_phn.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
+import 'package:quran__academy/Admin/AdminViewNotification.dart';
 
 class AdminSendNotification extends StatefulWidget {
   const AdminSendNotification({super.key});
@@ -30,7 +31,20 @@ class _AdminSendNotificationState extends State<AdminSendNotification> {
             );
           },
         ),
-        title: const Text("Send Notification"),
+        title: const Text("Send Announcements "),
+        actions: [Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(onPressed: () {
+
+              Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentNotification()),
+            );
+
+            
+            
+          }, child: Text("Details")),
+        )],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
