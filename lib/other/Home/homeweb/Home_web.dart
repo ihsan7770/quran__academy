@@ -200,6 +200,14 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   ),
 
                   const SizedBox(height: 200),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 1250),
+                    child: Text(
+                          "Location",
+                          style: TextStyle(fontSize: 60, fontWeight: FontWeight.w100),
+                        ),
+                  ),
+                    const SizedBox(height: 30),
 
                    MapImage(),//google map code
                    const SizedBox(height: 200),

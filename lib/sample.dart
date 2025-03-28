@@ -1,150 +1,89 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:quran__academy/Widget%20class/DrowerStudent.dart';
-import 'package:quran__academy/Widget%20class/theme.dart';
-import 'package:quran__academy/Admin/AdminViewNotification.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
 
-class StudentProfile extends StatefulWidget {
-  const StudentProfile({super.key});
+// class CheckMatchingUIDs extends StatefulWidget {
+//   const CheckMatchingUIDs({super.key});
 
-  @override
-  State<StudentProfile> createState() => _StudentProfileState();
-}
+//   @override
+//   State<CheckMatchingUIDs> createState() => _CheckMatchingUIDsState();
+// }
 
-class _StudentProfileState extends State<StudentProfile> {
-  String? userId;
+// class _CheckMatchingUIDsState extends State<CheckMatchingUIDs> {
+//   List<String> studentUIDs = [];
+//   List<String> sponsoredUIDs = [];
+//   List<String> matchingUIDs = [];
+//   bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchCurrentUser();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchAndCompareUIDs();
+//   }
 
-  void _fetchCurrentUser() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      setState(() {
-        userId = user.uid;
-      });
-    }
-  }
+//   Future<void> _fetchAndCompareUIDs() async {
+//     try {
+//       // Fetch UIDs from students collection (taking from 'uid' field)
+//       QuerySnapshot studentSnapshot =
+//           await FirebaseFirestore.instance.collection('students').get();
+//       List<String> students = studentSnapshot.docs
+//           .map((doc) => doc['uid'] as String) // Fetching from 'uid' field
+//           .toList();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.lightGreen,
-      appBar: AppBar(
-        backgroundColor: AppColors.lightGreen,
-        title: const Text("Student Profile"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, size: 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => StudentNotification()),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: StudentDrower(),
-      body: userId == null
-          ? CircularProgressIndicator()
-          : StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('students')
-                  .where('uid', isEqualTo: userId)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+//       // Fetch student_uid from sponsorships collection
+//       QuerySnapshot sponsorshipSnapshot =
+//           await FirebaseFirestore.instance.collection('sponsorships').get();
+//       List<String> sponsorships = sponsorshipSnapshot.docs
+//           .map((doc) => doc['student_uid'] as String) // Fetching from 'student_uid' field
+//           .toList();
 
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: Text("Error fetching data"),
-                  );
-                }
+//       // Find matching UIDs
+//       List<String> matched =
+//           students.where((uid) => sponsorships.contains(uid)).toList();
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text("No student details found"),
-                  );
-                }
+//       setState(() {
+//         studentUIDs = students;
+//         sponsoredUIDs = sponsorships;
+//         matchingUIDs = matched;
+//         isLoading = false;
+//       });
+//     } catch (e) {
+//       setState(() {
+//         isLoading = false;
+//       });
+//       print("Error fetching data: $e");
+//     }
+//   }
 
-                var studentData = snapshot.data!.docs.first;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text("UID Comparison")),
+//       body: isLoading
+//           ? const Center(child: CircularProgressIndicator())
+//           : Padding(
+//               padding: const EdgeInsets.all(16.0),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   const Text("Students Collection UIDs:", style: TextStyle(fontWeight: FontWeight.bold)),
+//                   studentUIDs.isNotEmpty
+//                       ? Column(children: studentUIDs.map((uid) => Text(uid)).toList())
+//                       : const Text("No UIDs found in Students collection", style: TextStyle(color: Colors.red)),
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      color: Colors.white,
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min, // Prevents unnecessary extra space
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: studentData['image_url'] != ''
-                                  ? Image.network(
-                                      studentData['image_url'],
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      'assets/nasru.png',
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                            const SizedBox(height: 10),
-                            _buildDetailRow("Name", studentData['Name']),
-                            _buildDetailRow("Standard", studentData['standard']),
-                            _buildDetailRow("Current Juzz", studentData['current_juzz']),
-                            _buildDetailRow("Phone", studentData['Phone']),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-    );
-  }
+//                   const SizedBox(height: 20),
+//                   const Text("Sponsorships Collection UIDs:", style: TextStyle(fontWeight: FontWeight.bold)),
+//                   sponsoredUIDs.isNotEmpty
+//                       ? Column(children: sponsoredUIDs.map((uid) => Text(uid)).toList())
+//                       : const Text("No UIDs found in Sponsorships collection", style: TextStyle(color: Colors.red)),
 
-  Widget _buildDetailRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0), // Reduced padding
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$title: ",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14, // Reduced font size slightly
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14, // Reduced font size slightly
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//                   const SizedBox(height: 20),
+//                   const Text("Matching UIDs:", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+//                   matchingUIDs.isNotEmpty
+//                       ? Column(children: matchingUIDs.map((uid) => Text(uid)).toList())
+//                       : const Text("No matching UIDs found", style: TextStyle(color: Colors.red)),
+//                 ],
+//               ),
+//             ),
+//     );
+//   }
+// }

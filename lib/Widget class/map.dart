@@ -43,7 +43,7 @@ class MapImage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30), // Clip image to curved shape
                   child: Image.asset(
-                    "assets/map.png",
+                    "assets/mp.png",
                     fit: BoxFit.cover,
                   ),
                 ),

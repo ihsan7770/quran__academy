@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quran__academy/Admin/AddEvents.dart';
 import 'package:quran__academy/Admin/AdminHomeWork.dart';
 import 'package:quran__academy/Admin/AdminSendNotification.dart';
+import 'package:quran__academy/Admin/AdminSponsershipMannage.dart';
 import 'package:quran__academy/Admin/AdminStudentManage.dart';
 import 'package:quran__academy/Admin/Admin_View_Bookings.dart';
 import 'package:quran__academy/Admin/Admin_View_Complaints.dart';
@@ -229,7 +230,45 @@ class _AdminHomePhnState extends State<AdminHomePhn> {
         
         
             ],
-          )////4rth row start
+          ),////4rth row start
+
+
+
+
+
+
+           Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+        
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+        
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  AdminSponsershipManagement()),
+                    );
+        
+                    
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                    color: Colors.amber,  
+                    borderRadius: BorderRadius.circular(30)),
+                    width: 150,
+                    height: 150,
+                    
+                    child: Center(child: Text("Sponsership Details"),),
+                  ),
+                ),
+              ),
+        
+         
+        
+        
+            ],
+          ),
         
         
         

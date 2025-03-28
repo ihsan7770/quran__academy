@@ -27,13 +27,14 @@ class _FacultyWebState extends State<FacultyWeb> {
               
                   Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircleAvatar(
-                          radius: 150,
-                          backgroundColor: Colors.amberAccent,
-                        ),
-                      ),
+                     Padding(
+                       padding: EdgeInsets.all(20.0),
+                       child: CircleAvatar(
+                         radius: 150,
+                         backgroundImage: AssetImage('assets/m11.png'),
+                       ),
+                             ),
+
               
               
                       Column(
@@ -49,14 +50,13 @@ class _FacultyWebState extends State<FacultyWeb> {
                             SizedBox(
                           width: 800,
                           child: Text(
-                            "Kannyala Shihab Thangal Thahfeelul Quran Academy is a Hifz college or an educational "
-                            "institution of higher religious learning, equivalent to a North Indian madrasa, located at "
-                            "Kannyala Pattikkad, near Perinthalmanna in the Malappuram district of Kerala. "
-                            "Established in 2017 by the Shihab Thangal Charitable Trust, the academy was affiliated with "
-                            "Jamia Nooriya Arabiyya in 2022. It became the fifth affiliated Hifz college under Jamia Nooriya Arabiyya. "
-                            "The academy is a premier orthodox Sunni-Shafi'i institution for the training of Islamic scholars in Kerala. "
-                            "It upholds the old Ponnani tradition of scholar training. The Nizami curriculum employed at Jamia Nooriya "
-                            "is a modified version of the syllabus used at the al-Baqiyyat-us-Salihat College in Vellore, with Shafi'i Law replacing Hanafi Law.",
+                            "Hafil Suhail Wafy is a dedicated educator currently serving as a teacher at Kannyala Shihab Thangal"
+                            "Thahfeelul Quran Academy, where he specializes in teaching Hifz (Quran memorization). With a strong "
+                            "academic background, he completed his higher studies at Jamia Nooriya, gaining in-depth knowledge "
+                            "in Islamic studies. His passion for education and leadership led him to take on the roles of both a "
+                            "principal and a teacher, guiding students with wisdom and commitment. Through his experience and "
+                            "dedication, he continues to inspire and shape the next generation of scholars ",
+                           
                             textAlign: TextAlign.justify,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
                           ),
@@ -73,13 +73,13 @@ class _FacultyWebState extends State<FacultyWeb> {
               
                    Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircleAvatar(
-                          radius: 150,
-                          backgroundColor: Colors.amberAccent,
-                        ),
-                      ),
+                       Padding(
+                       padding: EdgeInsets.all(20.0),
+                       child: CircleAvatar(
+                         radius: 140,
+                         backgroundImage: AssetImage('assets/m22.png'),
+                       ),
+                             ),
               
               
                       Column(
@@ -88,21 +88,64 @@ class _FacultyWebState extends State<FacultyWeb> {
                         children: [
                           Padding(
                             padding: EdgeInsets.only(left: 3,right: 1,top: 50,bottom: 10),
-                            child: Text("Hafil Suhail Wafy",style: TextStyle(fontSize: 50),),
+                            child: Text("Mohammed Saleem",style: TextStyle(fontSize: 50),),
               
                           ),
               
                             SizedBox(
                           width: 800,
                           child: Text(
-                            "Kannyala Shihab Thangal Thahfeelul Quran Academy is a Hifz college or an educational "
-                            "institution of higher religious learning, equivalent to a North Indian madrasa, located at "
-                            "Kannyala Pattikkad, near Perinthalmanna in the Malappuram district of Kerala. "
-                            "Established in 2017 by the Shihab Thangal Charitable Trust, the academy was affiliated with "
-                            "Jamia Nooriya Arabiyya in 2022. It became the fifth affiliated Hifz college under Jamia Nooriya Arabiyya. "
-                            "The academy is a premier orthodox Sunni-Shafi'i institution for the training of Islamic scholars in Kerala. "
-                            "It upholds the old Ponnani tradition of scholar training. The Nizami curriculum employed at Jamia Nooriya "
-                            "is a modified version of the syllabus used at the al-Baqiyyat-us-Salihat College in Vellore, with Shafi'i Law replacing Hanafi Law.",
+                            "Mohammed Saleem is a dedicated teacher who plays a vital role in educating students in both academic "
+                            "and religious studies. He teaches school subjects as well as Hifz and other Madrasa classes, ensuring a "
+                            "well-rounded education for his students. With a strong foundation in Islamic studies, he graduated from "
+                            "Nandhi Darusalam, equipping himself with the knowledge and skills needed to guide and mentor young "
+                            "learners. His commitment to education and his passion for teaching make him a respected and valued "
+                            "educator in his community. ",
+                           
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
+                          ),
+                        ),
+              
+                        ],
+                      ),
+                        
+                      
+              
+                    ],
+                  ),
+
+                   Row(
+                    children: [
+                       Padding(
+                       padding: EdgeInsets.all(20.0),
+                       child: CircleAvatar(
+                         radius: 140,
+                         backgroundImage: AssetImage('assets/m33.png'),
+                       ),
+                             ),
+              
+              
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 3,right: 1,top: 50,bottom: 10),
+                            child: Text("KP Azeez",style: TextStyle(fontSize: 50),),
+              
+                          ),
+              
+                            SizedBox(
+                          width: 800,
+                          child: Text(
+                            "KP Azeez is the financial manager at Kannyala Shihab Thangal Thahfeelul Quran Academy, responsible "
+                            "for overseeing all financial transactions, including incoming and outgoing funds. With his expertise in"
+                            "financial management, he ensures the academy's resources are utilized efficiently and transparently. His "
+                            "role is crucial in budgeting, expense tracking, and maintaining financial stability, allowing the institution"
+                            "to function smoothly and continue its mission of providing quality education. Through his dedication"
+                            "and meticulous management, he plays a vital role in the academy’s growth and sustainability ",
+                           
                             textAlign: TextAlign.justify,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
                           ),
@@ -115,6 +158,19 @@ class _FacultyWebState extends State<FacultyWeb> {
               
                     ],
                   )
+
+
+
+
+
+
+
+
+
+
+
+
+
               
               
                 ],

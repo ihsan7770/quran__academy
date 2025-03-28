@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/widgets.dart';
+
+
 import 'package:quran__academy/Widget%20class/AnnouncementCondainer.dart';
 
 import 'package:quran__academy/Widget%20class/DrowerStudent.dart';
 import 'package:quran__academy/Widget%20class/PhoneAnimationCondainer.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
-import 'package:quran__academy/Admin/AdminViewNotification.dart';
+
 import 'package:quran__academy/other/Home/homephone/Student_Profile_Update.dart';
 
 class StudentProfile extends StatefulWidget {
@@ -18,14 +18,13 @@ class StudentProfile extends StatefulWidget {
   @override
   State<StudentProfile> createState() => _StudentProfileState();
 }
-
 class _StudentProfileState extends State<StudentProfile> {
   String? userId;
   String studentName = "Loading...";
   String studentJuzz = "Loading...";
   String studentStandard = "Loading...";
-  String profileImageUrl = ""; // Default empty image
-  File? _image;
+  String profileImageUrl = "";
+  bool isSponsored = false; // Track sponsorship status
 
   @override
   void initState() {
@@ -43,7 +42,7 @@ class _StudentProfileState extends State<StudentProfile> {
     }
   }
 
-  void _fetchStudentData(String uid) async {
+  Future<void> _fetchStudentData(String uid) async {
     try {
       var snapshot = await FirebaseFirestore.instance
           .collection('students')
@@ -60,13 +59,9 @@ class _StudentProfileState extends State<StudentProfile> {
           studentStandard = studentData['standard'] ?? "N/A";
           profileImageUrl = studentData['image_url'] ?? "";
         });
-      } else {
-        setState(() {
-          studentName = "No Name Found";
-          studentJuzz = "N/A";
-          studentStandard = "N/A";
-          profileImageUrl = "";
-        });
+
+        // Check if the student is sponsored
+        _checkSponsorshipStatus(uid);
       }
     } catch (e) {
       setState(() {
@@ -78,37 +73,15 @@ class _StudentProfileState extends State<StudentProfile> {
     }
   }
 
-  // Future<void> _pickImage() async {
-  //   final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _image = File(pickedFile.path);
-  //     });
-  //     await _uploadImage();
-  //   }
-  // }
+  Future<void> _checkSponsorshipStatus(String uid) async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('sponsorships')
+        .where('student_uid', isEqualTo: uid)
+        .get();
 
-  Future<void> _uploadImage() async {
-    if (_image == null || userId == null) return;
-
-    try {
-      String filePath = 'profile_images/$userId.jpg';
-      Reference ref = FirebaseStorage.instance.ref().child(filePath);
-      UploadTask uploadTask = ref.putFile(_image!);
-      TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-
-      // Update Firestore with the new image URL
-      await FirebaseFirestore.instance.collection('students').doc(userId).update({
-        'image_url': downloadUrl,
-      });
-
-      setState(() {
-        profileImageUrl = downloadUrl;
-      });
-    } catch (e) {
-      print("Error uploading image: $e");
-    }
+    setState(() {
+      isSponsored = snapshot.docs.isNotEmpty;
+    });
   }
 
   @override
@@ -118,17 +91,6 @@ class _StudentProfileState extends State<StudentProfile> {
       appBar: AppBar(
         backgroundColor: AppColors.lightGreen,
         title: const Text("Student Profile"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, size: 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const StudentNotification()),
-              );
-            },
-          ),
-        ],
       ),
       drawer: const StudentDrower(),
       body: SingleChildScrollView(
@@ -136,10 +98,8 @@ class _StudentProfileState extends State<StudentProfile> {
           children: [
             const SizedBox(height: 30),
             Stack(
-              clipBehavior: Clip.none, // Allows overflow
               alignment: Alignment.center,
               children: [
-                // Profile Card 
                 Center(
                   child: Container(
                     margin: const EdgeInsets.only(top: 100),
@@ -159,9 +119,9 @@ class _StudentProfileState extends State<StudentProfile> {
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(height: 60), // Space for Avatar
+                        const SizedBox(height: 60),
                         Text(
-                          studentName, // Dynamic student name
+                          studentName,
                           style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -170,36 +130,43 @@ class _StudentProfileState extends State<StudentProfile> {
                             const SizedBox(width: 80),
                             Column(
                               children: [
-                                const Text(
-                                  "Juzz",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                ),
-                                Text(
-                                  studentJuzz, // Dynamic Juzz value
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                ),
+                                const Text("Juzz", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                                Text(studentJuzz, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                               ],
                             ),
                             const SizedBox(width: 60),
                             Column(
                               children: [
-                                const Text(
-                                  "Standard",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                ),
-                                Text(
-                                  studentStandard, // Dynamic Standard value
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                ),
+                                const Text("Standard", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                                Text(studentStandard, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+                        // Sponsorship Badge - Display only if student is sponsored
+                        if (isSponsored)
+                          Container(
+                            height: 64,
+                            width: double.infinity,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: 1,
+                                  right: 1,
+                                  child: Image.asset(
+                                    "assets/sponser.png",
+                                    height: 70,
+                                    width: 70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
                 ),
-                // Positioned Circle Avatar with Edit Icon
                 Positioned(
                   top: 0,
                   child: Stack(
@@ -207,19 +174,20 @@ class _StudentProfileState extends State<StudentProfile> {
                       CircleAvatar(
                         radius: 90,
                         backgroundColor: Colors.blue,
-                        backgroundImage: profileImageUrl.isNotEmpty
-                            ? NetworkImage(profileImageUrl)
-                            : null, // Load image from Firestore
+                        backgroundImage: profileImageUrl.isNotEmpty ? NetworkImage(profileImageUrl) : null,
                         child: profileImageUrl.isEmpty
                             ? const Text("IGI", style: TextStyle(color: Colors.white, fontSize: 20))
-                            : null, // Hide text when image is present
+                            : null,
                       ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
-                          onTap:() {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => StudentProfileUpdate()));
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => StudentProfileUpdate()),
+                            );
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -227,7 +195,10 @@ class _StudentProfileState extends State<StudentProfile> {
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(13),
-                            child: Text("Profile",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold),)
+                            child: const Text(
+                              "Profile",
+                              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
@@ -236,42 +207,23 @@ class _StudentProfileState extends State<StudentProfile> {
                 ),
               ],
             ),
-        
-            SizedBox(height: 20,),
-
-            
-               const Padding(
-                    padding: EdgeInsets.only(left: 0, bottom: 10,right: 200),
-                    child: Text(
-                      "Announcements",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-            
-
-
-           AnnouncementContainer(),
-            SizedBox(height: 20,),
-
+            const SizedBox(height: 20),
             const Padding(
-                    padding: EdgeInsets.only(left: 20, bottom: 10,right: 270),
-                    child: Text(
-                      "Programs",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  PhoneAnimationContainer()
-        
-        
-       
-        
-        
-        
-        
-        
+              padding: EdgeInsets.only(left: 0, bottom: 10, right: 200),
+              child: Text("Announcements", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+            AnnouncementContainer(),
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 20, bottom: 10, right: 270),
+              child: Text("Programs", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+            PhoneAnimationContainer(),
           ],
         ),
       ),
     );
   }
 }
+
+

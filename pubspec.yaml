@@ -35,7 +35,7 @@ flutter:
     - assets/qa.png
     - assets/head.png
     - assets/buld.jpg
-    - assets/map.png
+    - assets/mp.png
     - assets/nasru.png
     - assets/About.jpg
     - assets/oth.jpg
@@ -46,6 +46,18 @@ flutter:
     - assets/spon.jpg
     - assets/prayer.jpg
     - assets/ann.jpg
+    - assets/sponser.png
+    - assets/p1.jpg
+    - assets/p2.jpg
+    - assets/p3.jpg
+    - assets/p4.jpg
+    - assets/p5.jpg
+    - assets/p6.jpg
+    - assets/lin.jpg
+    - assets/m11.png
+    - assets/m22.png
+    - assets/m33.png
+
       
   
   fonts:

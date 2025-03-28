@@ -72,7 +72,7 @@ class _Gallery_WebState extends State<Gallery_Web> with TickerProviderStateMixin
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage("assets/buld.jpg"),
+                            image: AssetImage("assets/lin.jpg"),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -122,7 +122,7 @@ class _Gallery_WebState extends State<Gallery_Web> with TickerProviderStateMixin
                    color: Colors.amber,
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                    image: AssetImage('assets/buld.jpg'), // Replace with your image path
+                    image: AssetImage('assets/p1.jpg'), // Replace with your image path
                     fit: BoxFit.cover, // Ensures the image covers the container
                      ),
                            ),
@@ -139,7 +139,7 @@ class _Gallery_WebState extends State<Gallery_Web> with TickerProviderStateMixin
                    color: Colors.amber,
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                    image: AssetImage('assets/buld.jpg'), // Replace with your image path
+                    image: AssetImage('assets/p2.jpg'), // Replace with your image path
                     fit: BoxFit.cover, // Ensures the image covers the container
                      ),
                            ),
@@ -156,7 +156,7 @@ class _Gallery_WebState extends State<Gallery_Web> with TickerProviderStateMixin
                    color: Colors.amber,
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                    image: AssetImage('assets/buld.jpg'), // Replace with your image path
+                    image: AssetImage('assets/p3.jpg'), // Replace with your image path
                     fit: BoxFit.cover, // Ensures the image covers the container
                      ),
                            ),
@@ -167,6 +167,70 @@ class _Gallery_WebState extends State<Gallery_Web> with TickerProviderStateMixin
                      
               
               ],),
+
+                   Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                
+                children: [
+
+                   Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Container(
+                    height: 450,
+                    width: 450,
+                    decoration: BoxDecoration(
+                   color: Colors.amber,
+                    borderRadius: BorderRadius.circular(30),
+                    image: DecorationImage(
+                    image: AssetImage('assets/p4.jpg'), // Replace with your image path
+                    fit: BoxFit.cover, // Ensures the image covers the container
+                     ),
+                           ),
+                               ),
+                                    ),
+        
+
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Container(
+                    height: 450,
+                    width: 450,
+                    decoration: BoxDecoration(
+                   color: Colors.amber,
+                    borderRadius: BorderRadius.circular(30),
+                    image: DecorationImage(
+                    image: AssetImage('assets/p5.jpg'), // Replace with your image path
+                    fit: BoxFit.cover, // Ensures the image covers the container
+                     ),
+                           ),
+                               ),
+                                    ),
+                  
+
+                       Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Container(
+                    height: 450,
+                    width: 450,
+                    decoration: BoxDecoration(
+                   color: Colors.amber,
+                    borderRadius: BorderRadius.circular(30),
+                    image: DecorationImage(
+                    image: AssetImage('assets/p6.jpg'), // Replace with your image path
+                    fit: BoxFit.cover, // Ensures the image covers the container
+                     ),
+                           ),
+                               ),
+                                    ),
+        
+                              
+                     
+              
+              ],),
+
+
+
+
             ],
           ),
 

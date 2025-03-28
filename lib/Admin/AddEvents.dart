@@ -23,6 +23,7 @@ class _AddEventsState extends State<AddEvents> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   File? _selectedImage;
+  bool _isLoading = false; // Loading state
 
   // Function to pick an image
   Future<void> _pickImage() async {
@@ -34,65 +35,63 @@ class _AddEventsState extends State<AddEvents> {
     }
   }
 
-  //image upload
+  // Image upload function
+  Future<String?> _uploadImage(File imageFile) async {
+    try {
+      String fileName = 'events/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      Reference ref = FirebaseStorage.instance.ref().child(fileName);
+      UploadTask uploadTask = ref.putFile(imageFile);
 
-Future<String?> _uploadImage(File imageFile) async {
-  try {
-    String fileName = 'events/${DateTime.now().millisecondsSinceEpoch}.jpg';
-    Reference ref = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = ref.putFile(imageFile);
-
-    // Monitor the upload progress
-    uploadTask.snapshotEvents.listen((event) {
-      print("Upload Progress: ${(event.bytesTransferred / event.totalBytes) * 100}%");
-    });
-
-    TaskSnapshot snapshot = await uploadTask;
-    String downloadUrl = await snapshot.ref.getDownloadURL();
-
-    print("Image uploaded successfully: $downloadUrl");
-    return downloadUrl;
-  } catch (e) {
-    print("Image upload failed: $e");
-    return null;
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print("Image upload failed: $e");
+      return null;
+    }
   }
-}
-
 
   // Function to save event data to Firestore
- Future<void> _saveEvent() async {
-  if (_formKey.currentState!.validate()) {
-    String? imageUrl;
+  Future<void> _saveEvent() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true; // Show loading indicator
+      });
 
-    if (_selectedImage != null) {
-      imageUrl = await _uploadImage(_selectedImage!);
-      if (imageUrl == null || imageUrl.isEmpty) {
-        print("Image upload failed. Not saving to Firestore.");
-        return;
+      String? imageUrl;
+      if (_selectedImage != null) {
+        imageUrl = await _uploadImage(_selectedImage!);
+        if (imageUrl == null || imageUrl.isEmpty) {
+          setState(() {
+            _isLoading = false; // Hide loading indicator
+          });
+          return;
+        }
       }
+
+      await FirebaseFirestore.instance.collection('events').add({
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'location': _locationController.text,
+        'date': _dateController.text,
+        'time': _timeController.text,
+        'imageUrl': imageUrl ?? '',
+        'createdAt': Timestamp.now(),
+      });
+
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Event Created Successfully!')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => AdminHomePhn()),
+      );
     }
-
-    await FirebaseFirestore.instance.collection('events').add({
-      'title': _titleController.text,
-      'description': _descriptionController.text,
-      'location': _locationController.text,
-      'date': _dateController.text,
-      'time': _timeController.text,
-      'imageUrl': imageUrl ?? '',  // Ensure empty string only if upload fails
-      'createdAt': Timestamp.now(),
-    });
-
-    print("Event saved successfully with image: $imageUrl");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Event Created Successfully!')),
-    );
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => AdminHomePhn()),
-    );
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,17 @@ Future<String?> _uploadImage(File imageFile) async {
       backgroundColor: AppColors.lightGreen,
       appBar: AppBar(
         backgroundColor: AppColors.lightGreen,
-        actions: [
+        title: Text("Add Event"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 30),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminHomePhn()),
+            );
+          },
+        ),
+          actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(onPressed: () {
@@ -112,16 +121,9 @@ Future<String?> _uploadImage(File imageFile) async {
             
                     }, child: Text("All Events")),
           )],
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AdminHomePhn()),
-            );
-          },
-        ),
-        title: Text("Add Event"),
+
+
+
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -129,89 +131,12 @@ Future<String?> _uploadImage(File imageFile) async {
           child: Column(
             children: [
               SizedBox(height: 20),
-
-              // Title Field
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _titleController,
-                  decoration: _inputDecoration("Title"),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Title cannot be empty' : null,
-                ),
-              ),
-
-              // Description Field
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _descriptionController,
-                  decoration: _inputDecoration("Description"),
-                  maxLines: 4,
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Description cannot be empty' : null,
-                ),
-              ),
-
-              // Date Field
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _dateController,
-                  decoration: _inputDecoration("Select Date"),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (pickedDate != null) {
-                      setState(() {
-                        _dateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                      });
-                    }
-                  },
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Date cannot be empty' : null,
-                ),
-              ),
-
-              // Time Field
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _timeController,
-                  decoration: _inputDecoration("Select Time"),
-                  readOnly: true,
-                  onTap: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (pickedTime != null) {
-                      setState(() {
-                        _timeController.text = "${pickedTime.hour}:${pickedTime.minute}";
-                      });
-                    }
-                  },
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Time cannot be empty' : null,
-                ),
-              ),
-
-              // Location Field
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _locationController,
-                  decoration: _inputDecoration("Location"),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Location cannot be empty' : null,
-                ),
-              ),
-
+              _buildTextField(_titleController, "Title"),
+              _buildTextField(_descriptionController, "Description", maxLines: 4),
+              _buildDateTimePicker(_dateController, "Select Date", isDate: true),
+              _buildDateTimePicker(_timeController, "Select Time", isDate: false),
+              _buildTextField(_locationController, "Location"),
+              
               // Image Picker
               Padding(
                 padding: EdgeInsets.all(8.0),
@@ -241,11 +166,11 @@ Future<String?> _uploadImage(File imageFile) async {
                 ),
               ),
 
-              // Submit Button
+              // Submit Button with Loading Indicator
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: _saveEvent,
+                  onPressed: _isLoading ? null : _saveEvent,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
@@ -254,10 +179,19 @@ Future<String?> _uploadImage(File imageFile) async {
                     padding: EdgeInsets.symmetric(horizontal: 100, vertical: 13),
                     elevation: 5,
                   ),
-                  child: Text(
-                    "Create Event",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: _isLoading
+                      ? SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : Text(
+                          "Create Event",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
                 ),
               ),
             ],
@@ -267,6 +201,58 @@ Future<String?> _uploadImage(File imageFile) async {
     );
   }
 
+  // Helper function to build text fields
+  Widget _buildTextField(TextEditingController controller, String label, {int maxLines = 1}) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: _inputDecoration(label),
+        maxLines: maxLines,
+        validator: (value) => value == null || value.isEmpty ? '$label cannot be empty' : null,
+      ),
+    );
+  }
+
+  // Helper function for date and time picker fields
+  Widget _buildDateTimePicker(TextEditingController controller, String label, {required bool isDate}) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: _inputDecoration(label),
+        readOnly: true,
+        onTap: () async {
+          if (isDate) {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+            if (pickedDate != null) {
+              setState(() {
+                controller.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+              });
+            }
+          } else {
+            TimeOfDay? pickedTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+            if (pickedTime != null) {
+              setState(() {
+                controller.text = "${pickedTime.hour}:${pickedTime.minute}";
+              });
+            }
+          }
+        },
+        validator: (value) => value == null || value.isEmpty ? '$label cannot be empty' : null,
+      ),
+    );
+  }
+
+  // Helper function for input decoration
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
@@ -276,3 +262,5 @@ Future<String?> _uploadImage(File imageFile) async {
     );
   }
 }
+
+

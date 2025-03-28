@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:quran__academy/other/Home/homeweb/webcharity/EventBookingFeild.dart';
+
 import 'package:quran__academy/other/Home/homeweb/webcharity/DonationWeb.dart';
 import 'package:quran__academy/Widget%20class/container_green.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
@@ -118,7 +118,7 @@ Scaffold(
     height: 450,
     width: 450,
     decoration: BoxDecoration(
-      color: Colors.amber,
+     
       borderRadius: BorderRadius.circular(30),
       image: DecorationImage(
         image: AssetImage("assets/prayer.jpg"), // Replace with your actual asset path
@@ -148,7 +148,7 @@ Scaffold(
     height: 450,
     width: 450,
     decoration: BoxDecoration(
-      color: Colors.amber,
+      
       borderRadius: BorderRadius.circular(30),
       image: DecorationImage(
         image: AssetImage("assets/money.jpg"), // Replace with your actual asset path
@@ -308,7 +308,7 @@ Scaffold(
     height: 450,
     width: 450,
     decoration: BoxDecoration(
-      color: Colors.amber,
+   
       borderRadius: BorderRadius.circular(30),
       image: DecorationImage(
         image: AssetImage("assets/spon.jpg"), // Replace with your actual asset path

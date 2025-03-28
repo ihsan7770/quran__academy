@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran__academy/other/Home/homeweb/AdmissionWeb/AdmissionWeb.dart';
+
 import 'package:quran__academy/other/Home/homeweb/Home_web.dart';
 import 'package:quran__academy/other/Home/homeweb/Web_Gallery.dart';
 import 'package:quran__academy/other/Home/homeweb/web_about.dart';
