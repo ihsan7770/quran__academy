@@ -89,7 +89,7 @@ class _AdminDonatedAmountsState extends State<AdminDonatedAmounts> {
                       elevation: 4,
                       child: ListTile(
                         leading: const Icon(Icons.card_giftcard, color: AppColors.greens),
-                        title: Text("Cardholder: ${donation['cardHolderName']}"),
+                        title: Text("Donated by: ${donation['cardHolderName']}"),
                         subtitle: Text("Amount Donated: ₹${donation['amount']}"),
                         trailing: Text(
                           "${donation['timestamp'] != null ? (donation['timestamp'] as Timestamp).toDate() : 'N/A'}",

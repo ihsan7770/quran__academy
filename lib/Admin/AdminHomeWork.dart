@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:quran__academy/Admin/admin_home_phn.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
 
@@ -106,6 +107,12 @@ class _AdminHomeWorkState extends State<AdminHomeWork> {
               String studentStandard = homeworkData['studentStandard'] ?? "N/A";
               Map<String, dynamic> tasks = homeworkData['tasks'] ?? {};
 
+              /// Convert Firestore timestamp to formatted DateTime
+              Timestamp? timestamp = homeworkData['timestamp'];
+              String formattedDate = timestamp != null
+                  ? DateFormat('yyyy-MM-dd hh:mm a').format(timestamp.toDate())
+                  : "Unknown Date";
+
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                 shape: RoundedRectangleBorder(
@@ -128,6 +135,7 @@ class _AdminHomeWorkState extends State<AdminHomeWork> {
                                 Text("👨‍👩‍👧 Parent: $userName", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                 Text("🎓 Student: $studentName", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                 Text("📚 Standard: $studentStandard", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                Text("📅 Submitted: $formattedDate", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue)),
                               ],
                             ),
                           ),

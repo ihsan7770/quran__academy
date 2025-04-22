@@ -118,7 +118,7 @@ class _StudentComplaintsState extends State<StudentComplaints> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        hintText: "Enter your complaint",
+                        hintText: "Enter your complaint.",
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

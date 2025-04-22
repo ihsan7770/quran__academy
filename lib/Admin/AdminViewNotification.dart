@@ -27,7 +27,7 @@ class _StudentNotificationState extends State<StudentNotification> {
             );
           },
         ),
-        title: const Text(" Announcements "),
+        title: const Text("Total Announcements "),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

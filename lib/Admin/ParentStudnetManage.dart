@@ -44,7 +44,7 @@ class _ParentStudentManagingState extends State<ParentStudentManaging> {
         String parentUid = studentData['uid'] ?? ""; // Parent UID stored in student
 
         if (userDataMap.containsKey(parentUid)) {
-          userDataMap[parentUid]['students'].add(studentData);
+          userDataMap[parentUid]['students'].add({"id": doc.id, ...studentData});
         }
       }
     } catch (e) {
@@ -52,6 +52,41 @@ class _ParentStudentManagingState extends State<ParentStudentManaging> {
     }
 
     return userDataMap;
+  }
+
+  void _deleteParentAndStudents(String parentId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirm Deletion", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        content: const Text("Are you sure you want to delete this parent and all associated students? This action cannot be undone.",
+          style: TextStyle(fontSize: 16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.green, fontSize: 16)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await FirebaseFirestore.instance.collection('user').doc(parentId).delete();
+              QuerySnapshot studentSnapshot = await FirebaseFirestore.instance
+                  .collection('students')
+                  .where('uid', isEqualTo: parentId)
+                  .get();
+              for (var doc in studentSnapshot.docs) {
+                await doc.reference.delete();
+              }
+              setState(() {
+                _dataFuture = _fetchAllDetails();
+              });
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -85,6 +120,7 @@ class _ParentStudentManagingState extends State<ParentStudentManaging> {
           return ListView(
             padding: const EdgeInsets.all(8),
             children: userDataMap.entries.map((entry) {
+              String parentId = entry.key;
               Map<String, dynamic> user = entry.value['userData'];
               List students = entry.value['students'];
 
@@ -97,12 +133,12 @@ class _ParentStudentManagingState extends State<ParentStudentManaging> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text("Phone: ${user['Phone'] ?? 'N/A'}"),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deleteParentAndStudents(parentId),
+                  ),
                   children: students.isEmpty
-                      ? [
-                          const ListTile(
-                            title: Text("No Students Registered"),
-                          )
-                        ]
+                      ? [const ListTile(title: Text("No Students Registered"))]
                       : students.map((student) {
                           return ListTile(
                             leading: const Icon(Icons.school, color: Colors.green),

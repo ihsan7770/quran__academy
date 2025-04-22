@@ -17,19 +17,22 @@ class _SponsershipWebState extends State<SponsershipWeb> {
   @override
   void initState() {
     super.initState();
-    _fetchSponsoredStudents();
+   _listenSponsoredStudents();
   }
 
   /// Fetch all sponsored students' UIDs from Firestore
-  Future<void> _fetchSponsoredStudents() async {
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('sponsorships').get();
+ /// Listen for changes in sponsored students' UIDs from Firestore
+void _listenSponsoredStudents() {
+  FirebaseFirestore.instance.collection('sponsorships').snapshots().listen(
+    (snapshot) {
+      setState(() {
+        sponsoredStudentUids =
+            snapshot.docs.map((doc) => doc['student_uid'] as String).toSet();
+      });
+    },
+  );
+}
 
-    setState(() {
-      sponsoredStudentUids =
-          snapshot.docs.map((doc) => doc['student_uid'] as String).toSet();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +155,7 @@ class _SponsershipWebState extends State<SponsershipWeb> {
                                               );
                                     
                                               if (result == true) {
-                                                _fetchSponsoredStudents();
+                                               _listenSponsoredStudents();
                                               }
                                             },
                                             style: ElevatedButton.styleFrom(
