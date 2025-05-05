@@ -5,9 +5,7 @@ import 'package:quran__academy/Widget%20class/container_green.dart';
 import 'package:quran__academy/Widget%20class/last_condainer.dart';
 import 'package:quran__academy/Widget%20class/map.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
-
-
-//"com.example.quran_academy"
+import 'package:quran__academy/other/Home/homephone/Home_Phone.dart';// <<< Make sure to correct the path
 
 class HomeWeb extends StatefulWidget {
   const HomeWeb({super.key});
@@ -55,8 +53,14 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    // double screenWidth = MediaQuery.of(context).size.width;
 
+    // // If screen size is less than 900, show Home_Phone
+    // if (screenWidth < 900) {
+    //   return const Home_Phone();
+    // }
+
+    // // Else, show full web layout
     return Scaffold(
       backgroundColor: AppColors.lightGreen,
       body: Column(
@@ -111,7 +115,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   Container(
                     color: AppColors.lightGreen,
                     height: 180,
-                    width: screenWidth > 1500 ? 1500 : screenWidth * 0.95,
+                    // width: screenWidth > 1500 ? 1500 : screenWidth * 0.95,
                     padding: const EdgeInsets.all(8.0),
                     child: const Text(
                       "Kannyala Shihab Thangal Thahfeelul Quran Academy is a Hifz college or an educational "
@@ -125,7 +129,6 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                       textAlign: TextAlign.justify,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
                     ),
-                  
                   ),
 
                   const SizedBox(width: 10),
@@ -144,13 +147,12 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   AnimatedEventList(),
                   const SizedBox(height: 200),
 
-                  // Horizontal Scrolling Section
+                  // Horizontal Section
                   Container(
-                    
                     decoration: BoxDecoration(
-                              color: AppColors.wtgreen,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
+                      color: AppColors.wtgreen,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
                     width: 1400,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 1),
@@ -159,7 +161,6 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            
                             height: 500,
                             width: 600,
                             decoration: BoxDecoration(
@@ -176,7 +177,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                           ),
                           const SizedBox(width: 200),
                           SizedBox(
-                            width: 530, // Fixed width for text
+                            width: 530,
                             child: const Padding(
                               padding: EdgeInsets.all(45.0),
                               child: Text(
@@ -200,23 +201,19 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   ),
 
                   const SizedBox(height: 200),
+
                   Padding(
                     padding: const EdgeInsets.only(right: 1250),
-                    child: Text(
-                          "Location",
-                          style: TextStyle(fontSize: 60, fontWeight: FontWeight.w100),
-                        ),
+                    child: const Text(
+                      "Location",
+                      style: TextStyle(fontSize: 60, fontWeight: FontWeight.w100),
+                    ),
                   ),
-                    const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                   MapImage(),//google map code
-                   const SizedBox(height: 200),
-                   Last_Container(),
-
-
-
-
-                  
+                  MapImage(), // Google map
+                  const SizedBox(height: 200),
+                  Last_Container(),
                 ],
               ),
             ),

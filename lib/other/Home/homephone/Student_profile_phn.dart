@@ -1,15 +1,12 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 
 import 'package:quran__academy/Widget%20class/AnnouncementCondainer.dart';
-
 import 'package:quran__academy/Widget%20class/DrowerStudent.dart';
 import 'package:quran__academy/Widget%20class/PhoneAnimationCondainer.dart';
 import 'package:quran__academy/Widget%20class/theme.dart';
-
 import 'package:quran__academy/other/Home/homephone/Student_Profile_Update.dart';
 
 class StudentProfile extends StatefulWidget {
@@ -18,13 +15,15 @@ class StudentProfile extends StatefulWidget {
   @override
   State<StudentProfile> createState() => _StudentProfileState();
 }
+
 class _StudentProfileState extends State<StudentProfile> {
   String? userId;
   String studentName = "Loading...";
   String studentJuzz = "Loading...";
   String studentStandard = "Loading...";
   String profileImageUrl = "";
-  bool isSponsored = false; // Track sponsorship status
+  bool isSponsored = false;
+  StreamSubscription? _sponsorshipSubscription; // Real-time subscription
 
   @override
   void initState() {
@@ -60,8 +59,7 @@ class _StudentProfileState extends State<StudentProfile> {
           profileImageUrl = studentData['image_url'] ?? "";
         });
 
-        // Check if the student is sponsored
-        _checkSponsorshipStatus(uid);
+        _checkSponsorshipStatus(uid); // Start live monitoring
       }
     } catch (e) {
       setState(() {
@@ -73,15 +71,24 @@ class _StudentProfileState extends State<StudentProfile> {
     }
   }
 
-  Future<void> _checkSponsorshipStatus(String uid) async {
-    var snapshot = await FirebaseFirestore.instance
+  // 🔁 Real-time sponsorship listener
+  void _checkSponsorshipStatus(String uid) {
+    _sponsorshipSubscription?.cancel(); // Cancel previous if any
+    _sponsorshipSubscription = FirebaseFirestore.instance
         .collection('sponsorships')
         .where('student_uid', isEqualTo: uid)
-        .get();
-
-    setState(() {
-      isSponsored = snapshot.docs.isNotEmpty;
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        isSponsored = snapshot.docs.isNotEmpty;
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _sponsorshipSubscription?.cancel(); // Clean up listener
+    super.dispose();
   }
 
   @override
@@ -144,7 +151,6 @@ class _StudentProfileState extends State<StudentProfile> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        // Sponsorship Badge - Display only if student is sponsored
                         if (isSponsored)
                           Container(
                             height: 64,
@@ -173,10 +179,10 @@ class _StudentProfileState extends State<StudentProfile> {
                     children: [
                       CircleAvatar(
                         radius: 90,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
                         backgroundImage: profileImageUrl.isNotEmpty ? NetworkImage(profileImageUrl) : null,
                         child: profileImageUrl.isEmpty
-                            ? const Text("IGI", style: TextStyle(color: Colors.white, fontSize: 20))
+                            ? const Text("Null", style: TextStyle(color: Colors.white, fontSize: 20))
                             : null,
                       ),
                       Positioned(
@@ -225,5 +231,3 @@ class _StudentProfileState extends State<StudentProfile> {
     );
   }
 }
-
-

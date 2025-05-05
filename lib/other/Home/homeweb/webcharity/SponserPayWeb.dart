@@ -34,80 +34,130 @@ class _SponserPayWebState extends State<SponserPayWeb> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightGreen,
-      body: Column(
+      body: Stack(
         children: [
-          GreenCondainer(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    Text(
-                      'Sponsoring: ${widget.studentData['Name'] ?? 'No Name'}',
-                      style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 260,
-                      width: 500,
-                      child: CreditCardWidget(
-                        cardNumber: cardNumber,
-                        expiryDate: expiryDate,
-                        cardHolderName: cardHolderName,
-                        cvvCode: cvvCode,
-                        showBackView: isCvvFocused,
-                        onCreditCardWidgetChange: (brand) {},
-                      ),
-                    ),
-                    Form(
-                      key: formKey,
-                      child: SizedBox(
-                        width: 450,
-                        child: Column(
-                          children: [
-                            _buildTextField(cardNumberController, 'Card Number', 'XXXX XXXX XXXX XXXX', TextInputType.number, (value) => setState(() => cardNumber = value),
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(19), _CardNumberInputFormatter()],
-                            ),
-                            _buildTextField(expiryDateController, 'Expiry Date', 'MM/YY', TextInputType.datetime, (value) => setState(() => expiryDate = value),
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(5), _ExpiryDateInputFormatter()],
-                            ),
-                            _buildTextField(cvvController, 'CVV', 'XXX', TextInputType.number, (value) => setState(() => cvvCode = value),
-                              obscureText: true,
-                              inputFormatters: [LengthLimitingTextInputFormatter(3)],
-                            ),
-                            _buildTextField(cardHolderNameController, 'Cardholder Name', '', TextInputType.text, (value) => setState(() => cardHolderName = value)),
-                            const SizedBox(height: 20),
-                            isProcessing
-                                ? const CircularProgressIndicator(color: Colors.green)
-                              : ElevatedButton(
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        _showConfirmationDialog();
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.greens,
-                                      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                                    ),
-                                    child: Text(
-                                      "Donate ₹$amount",
-                                      style: const TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                          ],
+          Column(
+            children: [
+              GreenCondainer(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'Sponsoring: ${widget.studentData['Name'] ?? 'No Name'}',
+                          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                         ),
-                      ),
+                        SizedBox(
+                          height: 260,
+                          width: 500,
+                          child: CreditCardWidget(
+                            cardNumber: cardNumber,
+                            expiryDate: expiryDate,
+                            cardHolderName: cardHolderName,
+                            cvvCode: cvvCode,
+                            showBackView: isCvvFocused,
+                            onCreditCardWidgetChange: (brand) {},
+                          ),
+                        ),
+                        Form(
+                          key: formKey,
+                          child: SizedBox(
+                            width: 450,
+                            child: Column(
+                              children: [
+                                _buildTextField(
+                                  cardNumberController,
+                                  'Card Number',
+                                  'XXXX XXXX XXXX XXXX',
+                                  TextInputType.number,
+                                  (value) => setState(() => cardNumber = value),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(19),
+                                    _CardNumberInputFormatter(),
+                                  ],
+                                ),
+                                _buildTextField(
+                                  expiryDateController,
+                                  'Expiry Date',
+                                  'MM/YY',
+                                  TextInputType.datetime,
+                                  (value) => setState(() => expiryDate = value),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(5),
+                                    _ExpiryDateInputFormatter(),
+                                  ],
+                                ),
+                                _buildTextField(
+                                  cvvController,
+                                  'CVV',
+                                  'XXX',
+                                  TextInputType.number,
+                                  (value) => setState(() => cvvCode = value),
+                                  obscureText: true,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(3),
+                                  ],
+                                ),
+                                _buildTextField(
+                                  cardHolderNameController,
+                                  'Cardholder Name',
+                                  '',
+                                  TextInputType.text,
+                                  (value) => setState(() => cardHolderName = value),
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: isProcessing
+                                      ? null
+                                      : () {
+                                          if (formKey.currentState!.validate()) {
+                                            _showConfirmationDialog();
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.greens,
+                                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                  ),
+                                  child: Text(
+                                    "Donate ₹$amount",
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
+          if (isProcessing)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, String hint, TextInputType keyboardType, Function(String) onChanged, {bool obscureText = false, List<TextInputFormatter>? inputFormatters}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    String hint,
+    TextInputType keyboardType,
+    Function(String) onChanged, {
+    bool obscureText = false,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
@@ -125,7 +175,7 @@ class _SponserPayWebState extends State<SponserPayWeb> {
     );
   }
 
- void _showConfirmationDialog() {
+  void _showConfirmationDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -167,7 +217,7 @@ class _SponserPayWebState extends State<SponserPayWeb> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Column(
-          children: [
+          children: const [
             Icon(Icons.check_circle, color: Colors.green, size: 50),
             SizedBox(height: 10),
             Text("Payment Successful"),
@@ -188,25 +238,44 @@ class _SponserPayWebState extends State<SponserPayWeb> {
   }
 }
 
-
+// Optional: Card Number Formatter
 class _CardNumberInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text.replaceAll(RegExp(r'\s+'), '');
-    var formatted = '';
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final newText = StringBuffer();
     for (int i = 0; i < text.length; i++) {
-      if (i % 4 == 0 && i != 0) formatted += ' ';
-      formatted += text[i];
+      if (i != 0 && i % 4 == 0) {
+        newText.write(' ');
+      }
+      newText.write(text[i]);
     }
-    return newValue.copyWith(text: formatted, selection: TextSelection.collapsed(offset: formatted.length));
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
   }
 }
 
+// Optional: Expiry Date Formatter
 class _ExpiryDateInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text.replaceAll(RegExp(r'\s+'), '');
-    if (text.length >= 2 && !text.contains('/')) text = text.substring(0, 2) + '/' + text.substring(2);
-    return newValue.copyWith(text: text, selection: TextSelection.collapsed(offset: text.length));
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final newText = StringBuffer();
+    for (int i = 0; i < text.length && i < 4; i++) {
+      if (i == 2) newText.write('/');
+      newText.write(text[i]);
+    }
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
   }
 }
