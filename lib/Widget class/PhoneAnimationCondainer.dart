@@ -14,36 +14,37 @@ class _PhoneAnimationContainerState extends State<PhoneAnimationContainer> {
   List<Map<String, dynamic>> _events = [];
   int _currentIndex = 0;
   Timer? _timer;
+  StreamSubscription<QuerySnapshot>? _eventSubscription;
 
   @override
   void initState() {
     super.initState();
-    _fetchEvents();
+    _listenToEvents(); // live updates
   }
 
-  // Fetch all events from Firestore
-  Future<void> _fetchEvents() async {
-    try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('events')
-          .orderBy('createdAt', descending: true)
-          .get();
+  // Listen for real-time updates from Firestore
+  void _listenToEvents() {
+    _eventSubscription = FirebaseFirestore.instance
+        .collection('events')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        _events = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+        _currentIndex = 0;
+      });
 
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          _events = snapshot.docs.map((doc) => doc.data()).toList();
-        });
-
-        // Start animation if events are loaded
+      if (_events.isNotEmpty) {
         _startAutoScroll();
       }
-    } catch (e) {
-      print("Error fetching events: $e");
-    }
+    }, onError: (error) {
+      print("Error listening to events: $error");
+    });
   }
 
   // Start auto-scrolling through events
   void _startAutoScroll() {
+    _timer?.cancel(); // clear any previous timer
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_events.isNotEmpty && _pageController.hasClients) {
         _currentIndex = (_currentIndex + 1) % _events.length;
@@ -60,6 +61,7 @@ class _PhoneAnimationContainerState extends State<PhoneAnimationContainer> {
   void dispose() {
     _pageController.dispose();
     _timer?.cancel();
+    _eventSubscription?.cancel(); // stop listening to Firestore
     super.dispose();
   }
 
@@ -84,7 +86,7 @@ class _PhoneAnimationContainerState extends State<PhoneAnimationContainer> {
         ],
       ),
       child: _events.isEmpty
-          ? const Center(child: CircularProgressIndicator()) // Show loading indicator
+          ? const Center(child: CircularProgressIndicator())
           : ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
@@ -92,7 +94,7 @@ class _PhoneAnimationContainerState extends State<PhoneAnimationContainer> {
               ),
               child: PageView.builder(
                 controller: _pageController,
-                scrollDirection: Axis.vertical, // Scroll upward
+                scrollDirection: Axis.vertical,
                 itemCount: _events.length,
                 itemBuilder: (context, index) {
                   final event = _events[index];
@@ -103,7 +105,6 @@ class _PhoneAnimationContainerState extends State<PhoneAnimationContainer> {
     );
   }
 
-  // Event content inside the container
   Widget _buildEventContent(Map<String, dynamic> event) {
     return Column(
       children: [

@@ -23,7 +23,9 @@ class _StudentProfileState extends State<StudentProfile> {
   String studentStandard = "Loading...";
   String profileImageUrl = "";
   bool isSponsored = false;
-  StreamSubscription? _sponsorshipSubscription; // Real-time subscription
+
+  StreamSubscription<QuerySnapshot>? _studentSubscription;
+  StreamSubscription<QuerySnapshot>? _sponsorshipSubscription;
 
   @override
   void initState() {
@@ -37,18 +39,20 @@ class _StudentProfileState extends State<StudentProfile> {
       setState(() {
         userId = user.uid;
       });
-      _fetchStudentData(user.uid);
+      _listenToStudentData(user.uid); // 🔁 Real-time student listener
     }
   }
 
-  Future<void> _fetchStudentData(String uid) async {
-    try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('students')
-          .where('uid', isEqualTo: uid)
-          .limit(1)
-          .get();
+  // 🔁 Real-time student data listener
+  void _listenToStudentData(String uid) {
+    _studentSubscription?.cancel();
 
+    _studentSubscription = FirebaseFirestore.instance
+        .collection('students')
+        .where('uid', isEqualTo: uid)
+        .limit(1)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         var studentData = snapshot.docs.first;
 
@@ -59,21 +63,22 @@ class _StudentProfileState extends State<StudentProfile> {
           profileImageUrl = studentData['image_url'] ?? "";
         });
 
-        _checkSponsorshipStatus(uid); // Start live monitoring
+        _checkSponsorshipStatus(uid); // 🔁 Live sponsorship listener
       }
-    } catch (e) {
+    }, onError: (e) {
       setState(() {
         studentName = "Error Loading";
         studentJuzz = "N/A";
         studentStandard = "N/A";
         profileImageUrl = "";
       });
-    }
+    });
   }
 
   // 🔁 Real-time sponsorship listener
   void _checkSponsorshipStatus(String uid) {
-    _sponsorshipSubscription?.cancel(); // Cancel previous if any
+    _sponsorshipSubscription?.cancel();
+
     _sponsorshipSubscription = FirebaseFirestore.instance
         .collection('sponsorships')
         .where('student_uid', isEqualTo: uid)
@@ -87,7 +92,8 @@ class _StudentProfileState extends State<StudentProfile> {
 
   @override
   void dispose() {
-    _sponsorshipSubscription?.cancel(); // Clean up listener
+    _studentSubscription?.cancel();
+    _sponsorshipSubscription?.cancel();
     super.dispose();
   }
 

@@ -13,70 +13,74 @@ class _AnnouncementContainerState extends State<AnnouncementContainer> {
   List<String> announcements = [];
   int currentIndex = 0;
   bool isFading = true;
-  Timer? _timer; // Store the timer reference
+  Timer? _timer;
+  StreamSubscription<QuerySnapshot>? _subscription;
 
   @override
   void initState() {
     super.initState();
-    _fetchNotifications();
+    _listenToNotifications(); // live updates
     _startAutoSwitching();
   }
 
-  Future<void> _fetchNotifications() async {
-    try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('notifications')
-          .orderBy('timestamp', descending: true)
-          .limit(5)
-          .get();
+  void _listenToNotifications() {
+    _subscription = FirebaseFirestore.instance
+        .collection('notifications')
+        .orderBy('timestamp', descending: true)
+        .limit(5)
+        .snapshots()
+        .listen((snapshot) {
+      if (!mounted) return;
 
-      if (snapshot.docs.isNotEmpty && mounted) { // Check if widget is still in tree
-        setState(() {
-          announcements = snapshot.docs
-              .map((doc) => (doc['description'] ?? "No announcement available").toString())
-              .toList();
-        });
-      } else if (mounted) {
-        setState(() {
-          announcements = ["No announcements yet!"];
-        });
-      }
-    } catch (e) {
+      final updatedAnnouncements = snapshot.docs
+          .map((doc) => (doc['description'] ?? "No announcement").toString())
+          .toList();
+
+      setState(() {
+        announcements = updatedAnnouncements.isNotEmpty
+            ? updatedAnnouncements
+            : ["No announcements yet!"];
+
+        // Ensure currentIndex is within bounds after update
+        if (currentIndex >= announcements.length) {
+          currentIndex = 0;
+        }
+      });
+    }, onError: (error) {
       if (mounted) {
         setState(() {
           announcements = ["Error loading announcements!"];
         });
       }
-    }
+    });
   }
 
   void _startAutoSwitching() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!mounted) {
+      if (!mounted || announcements.isEmpty) {
         timer.cancel();
         return;
       }
 
-      if (announcements.isNotEmpty) {
-        setState(() {
-          isFading = false;
-        });
+      setState(() {
+        isFading = false;
+      });
 
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            setState(() {
-              currentIndex = (currentIndex + 1) % announcements.length;
-              isFading = true;
-            });
-          }
-        });
-      }
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted && announcements.isNotEmpty) {
+          setState(() {
+            currentIndex = (currentIndex + 1) % announcements.length;
+            isFading = true;
+          });
+        }
+      });
     });
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when widget is removed
+    _timer?.cancel();
+    _subscription?.cancel(); // stop listening to Firestore
     super.dispose();
   }
 
@@ -121,7 +125,9 @@ class _AnnouncementContainerState extends State<AnnouncementContainer> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  announcements.isNotEmpty ? announcements[currentIndex] : "Loading...",
+                  announcements.isNotEmpty
+                      ? announcements[currentIndex]
+                      : "Loading...",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.black,
