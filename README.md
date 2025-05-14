@@ -12,3 +12,5 @@ A new Flutter project.
 
 ![App Screenshot](https://github.com/ihsan7770/quran__academy/blob/4049063c7310df8b849ac1a00907bb26f6157893/Screenshot%202025-05-14%20101627.png?raw=true)
 
+![App Screenshot](https://github.com/ihsan7770/quran__academy/blob/2ccb25c0c997bc4d4cd93a054dbca1e52c0d42ad/Screenshot%202025-05-14%20104247.png?raw=true)
+
