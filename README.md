@@ -1,6 +1,6 @@
 # Quran Academy
 
-A new Flutter project.
+A new Flutter project Quran Academy is a community-trust institution offering free Quranic and academic education with donor support. It provides Hifz, Tajweed, Islamic studies, and essential academics for holistic growth. Through competitions, workshops, and parent involvement, the academy blends traditional teachings with modern education, nurturing both faith and excellence
 
 ## Screenshots
 
