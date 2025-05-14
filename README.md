@@ -1,5 +1,7 @@
-# quran__academy
+# Quran Academy
 
 A new Flutter project.
-"# quran__academy" 
-![image_alt)(https://github.com/ihsan7770/quran__academy/blob/7e90bc3606fe927928cc43676150da3fbcbf3e59/Screenshot%202025-05-14%20101135.png)
+
+## Screenshot
+
+![App Screenshot](https://github.com/ihsan7770/quran__academy/blob/7e90bc3606fe927928cc43676150da3fbcbf3e59/Screenshot%202025-05-14%20101135.png?raw=true)
