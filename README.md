@@ -16,4 +16,4 @@ A new Flutter project Quran Academy is a community-trust institution offering fr
 
 ## Application Design
 
-![App Screenshot](https://github.com/ihsan7770/quran__academy/blob/6e1b550da250b7dbb0689a593e4aa58bcd37e153/Application%20Designs_page-0001.jpg?raw=true)
+![App Screenshot](https://github.com/ihsan7770/quran__academy/blob/b9e06219fc4b89de9501bc9c77b72066f51c15ec/Application%20Designs.png?raw=true)
